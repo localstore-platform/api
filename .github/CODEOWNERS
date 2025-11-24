@@ -1,0 +1,31 @@
+# Code Owners for LocalStore Platform API
+
+# Default owners for everything in the repo
+* @donggiangthai
+
+# Core modules
+/src/modules/ @localstore-platform/backend-team
+/src/common/ @localstore-platform/backend-team
+
+# Database and migrations
+/src/database/ @localstore-platform/database-team
+/migrations/ @localstore-platform/database-team
+
+# AI service
+/ai-service/ @localstore-platform/ai-team
+
+# Infrastructure and deployment
+/docker-compose*.yml @localstore-platform/devops-team
+/.github/workflows/ @localstore-platform/devops-team
+/kubernetes/ @localstore-platform/devops-team
+
+# Configuration
+/.env.example @localstore-platform/backend-team @localstore-platform/devops-team
+/src/config/ @localstore-platform/backend-team
+
+# Documentation
+/docs/ @localstore-platform/backend-team
+/README.md @localstore-platform/backend-team
+
+# Tests
+/test/ @localstore-platform/backend-team @localstore-platform/qa-team
