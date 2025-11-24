@@ -14,7 +14,7 @@ assignees: ''
 
 <!-- Link to relevant section in specs repository -->
 
-- Spec: [Link to spec](https://github.com/localstore-platform/specs/blob/v1.0-specs/)
+- Spec: [Link to spec](https://github.com/localstore-platform/specs/blob/v1.1-specs/)
 - Related sections: Lines X-Y
 - Sprint/Phase: MVP / Phase 1 / Phase 2 / Future
 

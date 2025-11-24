@@ -10,7 +10,7 @@ This is the **API repository** for LocalStore Platform - a Vietnamese-first, mul
 - **Primary Market:** Vietnamese small businesses (restaurants, street food vendors)
 - **Language:** Vietnamese-first approach (vi-VN locale, VND currency)
 - **Architecture:** Multi-tenant SaaS with Row-Level Security (RLS)
-- **Specs Repository:** <https://github.com/localstore-platform/specs> (v1.0-specs)
+- **Specs Repository:** <https://github.com/localstore-platform/specs> (v1.1-specs)
 
 ## Tech Stack
 

@@ -24,7 +24,7 @@ This repository contains the backend API implementation for LocalStore Platform,
 
 ## Documentation
 
-- **Specifications:** [localstore-platform/specs](https://github.com/localstore-platform/specs) (v1.0-specs)
+- **Specifications:** [localstore-platform/specs](https://github.com/localstore-platform/specs) (v1.1-specs)
 - **Spec Links:** [docs/SPEC_LINKS.md](./docs/SPEC_LINKS.md) - Curated links to relevant specifications
 - **Copilot Instructions:** [.github/copilot-instructions.md](./.github/copilot-instructions.md)
 
@@ -191,7 +191,7 @@ GET    /api/v1/customers
 GET    /api/v1/analytics/revenue
 ```
 
-Full API specification: [architecture/api-specification.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/architecture/api-specification.md)
+Full API specification: [architecture/api-specification.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/api-specification.md)
 
 ### GraphQL
 
@@ -212,7 +212,7 @@ mutation {
 }
 ```
 
-Full GraphQL schema: [architecture/graphql-schema.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/architecture/graphql-schema.md)
+Full GraphQL schema: [architecture/graphql-schema.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/graphql-schema.md)
 
 ## Environment Variables
 
@@ -256,7 +256,7 @@ docker-compose -f docker-compose.yml up -d
 
 ### Production
 
-See [architecture/backend-setup-guide.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/architecture/backend-setup-guide.md) (lines 1200-1600) for detailed production deployment instructions.
+See [architecture/backend-setup-guide.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/backend-setup-guide.md) (lines 1200-1600) for detailed production deployment instructions.
 
 ## Contributing
 
@@ -267,7 +267,7 @@ See [architecture/backend-setup-guide.md](https://github.com/localstore-platform
 5. Submit PR with reference to spec sections
 6. Ensure all checks pass (lint, tests, coverage)
 
-See [CONTRIBUTING.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/CONTRIBUTING.md) for detailed guidelines.
+See [CONTRIBUTING.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/CONTRIBUTING.md) for detailed guidelines.
 
 ## Multi-Tenancy
 
@@ -293,9 +293,9 @@ AGPL-3.0 - See [LICENSE](./LICENSE) for details.
 ## Links
 
 - **Specifications:** <https://github.com/localstore-platform/specs>
-- **Implementation Roadmap:** [planning/implementation-roadmap.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/planning/implementation-roadmap.md)
-- **Database Schema:** [architecture/database-schema.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/architecture/database-schema.md)
-- **Backend Setup Guide:** [architecture/backend-setup-guide.md](https://github.com/localstore-platform/specs/blob/v1.0-specs/architecture/backend-setup-guide.md)
+- **Implementation Roadmap:** [planning/implementation-roadmap.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/planning/implementation-roadmap.md)
+- **Database Schema:** [architecture/database-schema.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/database-schema.md)
+- **Backend Setup Guide:** [architecture/backend-setup-guide.md](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/backend-setup-guide.md)
 
 ## Support
 

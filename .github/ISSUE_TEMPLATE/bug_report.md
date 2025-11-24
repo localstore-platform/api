@@ -14,7 +14,7 @@ assignees: ''
 
 <!-- Link to relevant section in specs repository -->
 
-- Spec: [Link to spec](https://github.com/localstore-platform/specs/blob/v1.0-specs/)
+- Spec: [Link to spec](https://github.com/localstore-platform/specs/blob/v1.1-specs/)
 - Expected behavior according to spec: Lines X-Y
 
 ## Current Behavior
