@@ -186,6 +186,19 @@ When implementing features, always reference these key specifications:
 
 Full links available in `docs/SPEC_LINKS.md`.
 
+## Git Workflow
+
+**IMPORTANT**: Follow the git workflow defined in [docs/GIT_WORKFLOW.md](../docs/GIT_WORKFLOW.md).
+
+Key rules:
+
+- **Never commit directly to main branch**
+- If on main, create a new branch before committing
+- Branch naming: `<type>/<short-description>` (e.g., `feat/add-menu-api`)
+- Commit changes logically (group related changes)
+- After commits, create/update PR to main branch
+- Use conventional commit messages
+
 ## AI Service Integration
 
 For AI-powered features (receipt OCR, analytics):
