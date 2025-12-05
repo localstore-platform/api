@@ -1,237 +1,195 @@
-# GitHub Copilot Instructions - LocalStore Platform API
+# GitHub Copilot Instructions – API Repository
+
+This extends the global instructions from the [specs repository](https://github.com/localstore-platform/specs/blob/v1.1-specs/.github/copilot-instructions.md).
 
 ## Repository Context
 
-This is the **API repository** for LocalStore Platform - a Vietnamese-first, multi-tenant SaaS platform for small businesses.
+- **Repository:** api
+- **Purpose:** NestJS backend serving REST, GraphQL, and WebSocket endpoints for the LocalStore Platform
+- **Tech Stack:** NestJS 10, TypeScript 5, PostgreSQL 14, Redis 7, TypeORM, Bull Queue
+- **Spec Version:** v1.1-specs
 
-**Key Information:**
+---
 
-- **Type:** NestJS Backend + Python AI Service
-- **Primary Market:** Vietnamese small businesses (restaurants, street food vendors)
-- **Language:** Vietnamese-first approach (vi-VN locale, VND currency)
-- **Architecture:** Multi-tenant SaaS with Row-Level Security (RLS)
-- **Specs Repository:** <https://github.com/localstore-platform/specs> (v1.1-specs)
+## 🚀 "Continue Work" Trigger
 
-## Tech Stack
+When the user says **"continue work"**, **"tiếp tục"**, or **"next task"**:
 
-- **Backend:** NestJS 10 + TypeScript 5
-- **Database:** PostgreSQL 14 (with RLS) + TypeORM
-- **Cache:** Redis 7
-- **Queue:** Bull Queue
-- **API:** REST + GraphQL (Apollo) + gRPC
-- **Real-time:** Socket.io
-- **AI Service:** Python 3.11 + FastAPI
-- **Logging:** Winston
+### Step 1: Read Local Progress
 
-## Code Generation Guidelines
+Read `docs/CURRENT_WORK.md` in this repository to understand:
 
-### Always Follow These Rules
+- Current sprint and focus
+- Which stories are assigned to this repo
+- Current status of each story (🔴 Not Started / 🟡 In Progress / ✅ Done)
+- Any blockers or notes from previous session
 
-1. **Check Specs First:** Before implementing features, reference `docs/SPEC_LINKS.md` for relevant specifications
-2. **Vietnamese-First:** All user-facing text must be in Vietnamese (vi-VN)
-3. **Currency:** Always use VND (₫) for monetary values
-4. **Multi-Tenancy:** Every entity must include `tenant_id` for data isolation
-5. **RLS Enforcement:** Database queries should respect Row-Level Security policies
-6. **Error Messages:** Return Vietnamese error messages with English codes for debugging
+### Step 2: Identify Next Task
 
-### Code Style
+From CURRENT_WORK.md:
 
-```typescript
-// ✅ Good: Vietnamese comments for business logic
-/**
- * Tính tổng doanh thu theo ngày
- * Calculate daily revenue totals
- */
-async calculateDailyRevenue(tenantId: string, date: Date): Promise<number> {
-  // Implementation with tenant_id filter
-}
+1. If any story is 🟡 In Progress → continue that story
+2. Otherwise, pick the first 🔴 Not Started story
+3. If all stories are ✅ Done → report completion and suggest next sprint
 
-// ✅ Good: VND currency formatting
-const price = formatCurrency(50000, 'vi-VN', 'VND'); // "50.000 ₫"
+### Step 3: Load Specifications
 
-// ❌ Bad: Missing tenant context
-async getOrders(): Promise<Order[]> {
-  return this.orderRepository.find();
-}
+1. Check the "Spec References" section in CURRENT_WORK.md for the spec link
+2. Fetch and read the relevant specification section
+3. Also check `docs/SPEC_LINKS.md` for additional context if needed
 
-// ✅ Good: Tenant-scoped queries
-async getOrders(tenantId: string): Promise<Order[]> {
-  return this.orderRepository.find({ where: { tenantId } });
-}
-```
+### Step 4: Implement
 
-### File Structure Conventions
+1. Follow the spec exactly
+2. Apply code standards from this file (see below)
+3. Multi-tenant isolation, Vietnamese locale support
 
-```
-src/
-├── modules/          # Feature modules (products, orders, etc.)
-│   ├── products/
-│   │   ├── products.module.ts
-│   │   ├── products.controller.ts
-│   │   ├── products.service.ts
-│   │   ├── products.resolver.ts (GraphQL)
-│   │   ├── dto/
-│   │   ├── entities/
-│   │   └── tests/
-├── common/           # Shared code
-│   ├── decorators/
-│   ├── filters/
-│   ├── guards/
-│   ├── interceptors/
-│   └── pipes/
-├── database/         # Database configuration
-│   ├── migrations/
-│   └── seeds/
-└── config/           # Configuration modules
-```
+### Step 5: Update Progress
 
-### TypeORM Entity Pattern
+After implementation, **update `docs/CURRENT_WORK.md`**:
 
-```typescript
-@Entity('products')
-export class Product {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+- Change story status from 🔴 to 🟡 (in progress) or ✅ (done)
+- Add notes about what was implemented
+- Add any blockers or follow-up items
+- Update "Last Updated" timestamp
 
-  @Column()
-  @Index()
-  tenantId: string; // Always include for RLS
+### Step 6: Git Workflow
 
-  @Column({ type: 'varchar', length: 255 })
-  name: string; // Vietnamese product name
+1. Create/use feature branch: `feat/<story-description>`
+2. Commit with conventional message
+3. Run `npm run lint && npm run test`
+4. Create PR when story is complete
 
-  @Column({ type: 'decimal', precision: 12, scale: 0 })
-  price: number; // VND, no decimal places
+### Step 7: Report
 
-  @CreateDateColumn()
-  createdAt: Date;
+Tell the user:
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+- What story you worked on
+- What was implemented
+- Current status
+- What's next
 
-  @ManyToOne(() => Tenant)
-  tenant: Tenant;
-}
-```
+---
 
-### API Response Pattern
+## Key Spec Files
 
-```typescript
-// ✅ Good: Structured response with Vietnamese messages
-{
-  "success": true,
-  "data": { /* ... */ },
-  "message": "Sản phẩm đã được tạo thành công",
-  "code": "PRODUCT_CREATED"
-}
+| Spec File | Sections | Purpose |
+|-----------|----------|---------|
+| `architecture/api-specification.md` | Lines 80-1200 | REST endpoints |
+| `architecture/api-specification.md` | Lines 1200-1800 | GraphQL schema |
+| `architecture/backend-setup-guide.md` | Lines 1-600 | NestJS setup, TypeORM |
+| `architecture/database-schema.md` | Lines 80-750 | Tables, RLS, indexes |
+| `planning/sprint-0.5-menu-demo.md` | Stories 2.1-2.3 | Current sprint tasks |
 
-// ❌ Bad: English messages
-{
-  "success": true,
-  "message": "Product created successfully"
-}
-```
+Also check `docs/SPEC_LINKS.md` for curated links with line numbers.
 
-### Testing
+---
 
-- **Unit Tests:** Use Jest for services and utilities
-- **E2E Tests:** Use Supertest for API endpoints
-- **Test Data:** Use Vietnamese names and VND prices in fixtures
-- **Coverage Target:** Minimum 80% for business logic
-
-### Performance Considerations
-
-- **Caching:** Cache frequently accessed data (product lists, user profiles) in Redis
-- **Pagination:** Always paginate list endpoints (default: 20 items/page)
-- **Indexes:** Ensure `tenant_id` is indexed on all multi-tenant tables
-- **Query Optimization:** Use eager loading sparingly, prefer lazy loading with caching
-
-### Security
-
-- **Authentication:** JWT-based with refresh tokens
-- **Authorization:** Role-based access control (RBAC) with tenant context
-- **RLS:** Rely on PostgreSQL RLS policies for data isolation
-- **Input Validation:** Use class-validator DTOs for all inputs
-- **Rate Limiting:** Implement per-tenant rate limits
-
-## Common Commands
+## Build & Test Commands
 
 ```bash
-# Development
-npm run start:dev
-
-# Database
-npm run migration:generate -- -n MigrationName
-npm run migration:run
-npm run seed
-
-# Testing
-npm run test
-npm run test:e2e
-npm run test:cov
-
-# Code Quality
-npm run lint
-npm run format
+npm install              # Install dependencies
+docker-compose up -d postgres redis  # Start DB and cache
+npm run start:dev        # Start development server
+npm run test             # Run unit tests
+npm run test:e2e         # Run E2E tests
+npm run lint             # Lint code
+npm run migration:run    # Run database migrations
+npm run seed             # Seed database with sample data
+npm run build            # Build for production
 ```
 
-## Specification References
+---
 
-When implementing features, always reference these key specifications:
+## Project Structure
 
-- **API Endpoints:** `architecture/api-specification.md` (lines 80-1200)
-- **Database Schema:** `architecture/database-schema.md` (lines 80-500)
-- **GraphQL Schema:** `architecture/graphql-schema.md` (lines 1-900)
-- **Setup Guide:** `architecture/backend-setup-guide.md`
+```text
+src/
+├── modules/
+│   ├── menu/           # Menu CRUD (Sprint 0.5 focus)
+│   ├── auth/           # JWT + OTP authentication
+│   ├── location/       # Multi-location management
+│   └── analytics/      # Metrics and AI integration
+├── common/
+│   ├── decorators/     # @CurrentTenant, @Public
+│   ├── guards/         # JwtAuthGuard, RolesGuard
+│   ├── filters/        # Exception filters (Vietnamese messages)
+│   └── interceptors/   # Logging, caching
+├── database/
+│   ├── migrations/     # TypeORM migrations
+│   └── seeds/          # Vietnamese sample data
+└── grpc/               # AI service client
+```
 
-Full links available in `docs/SPEC_LINKS.md`.
+---
+
+## Code Standards
+
+### NestJS Patterns
+
+- Use modules for feature boundaries (`src/modules/menu/`)
+- Controllers handle HTTP, Services contain business logic
+- Use DTOs with class-validator for request/response validation
+- Entities mirror database-schema.md exactly
+
+### Multi-Tenancy
+
+- **CRITICAL:** Always scope queries by `tenant_id`
+- Use `@CurrentTenant()` decorator to get tenant from JWT
+- RLS policies are set in PostgreSQL, but also validate in application layer
+
+### TypeORM Conventions
+
+- Entity names: singular, PascalCase (`MenuItem`, not `MenuItems`)
+- Column names: snake_case in database, camelCase in TypeScript
+- Always include `tenant_id` in entity definitions
+- Use migrations for schema changes, never sync
+
+### Error Handling
+
+- Use NestJS exception filters
+- Return Vietnamese error messages for user-facing errors
+- Include error codes for programmatic handling
+- Log errors with structured format (Winston)
+
+### Vietnamese Localization
+
+- Default locale: vi-VN
+- Currency: VND with format 75.000₫
+- Error messages: Vietnamese for user-facing, English for system logs
+
+---
 
 ## Git Workflow
 
-**IMPORTANT**: Follow the git workflow defined in [docs/GIT_WORKFLOW.md](../docs/GIT_WORKFLOW.md).
+**CRITICAL:** Follow `docs/GIT_WORKFLOW.md`:
 
-Key rules:
-
-- **Never commit directly to main branch**
-- If on main, create a new branch before committing
-- Branch naming: `<type>/<short-description>` (e.g., `feat/add-menu-api`)
-- Commit changes logically (group related changes)
-- After commits, push and create/update PR to main branch — **do not wait for confirmation**
+- Never commit directly to main branch
+- Branch naming: `feat/<story-description>` (e.g., `feat/menu-rest-api`)
 - Use conventional commit messages
+- Create PR after commits
 
-### Commit Granularity Principle
+---
 
-Each commit should answer ONE of these questions:
+## Testing Requirements
 
-- "What single feature/fix does this add?"
-- "What single purpose do these files serve together?"
+- Unit tests for all services (Jest)
+- E2E tests for API endpoints (Supertest)
+- Test multi-tenant isolation
+- Mock external services (Redis, AI service)
 
-**Rule of thumb:** If you need "and" to describe the commit, split it.
+---
 
-- ❌ `Add docs and config files` → Split
-- ❌ `Update README and add environment template` → Split
-- ✅ `Add GitHub PR template and CODEOWNERS` → OK (same purpose: GitHub config)
-- ✅ `Add specification links documentation` → OK (single purpose)
+## Dependencies
 
-## AI Service Integration
+- **Requires:** `contracts` repo for shared TypeScript types (@localstore/contracts)
+- **Provides API for:** `menu` and `dashboard` repos
+- **Communicates with:** `ml` repo via gRPC (future)
 
-For AI-powered features (receipt OCR, analytics):
+---
 
-- **Language:** Python 3.11 + FastAPI
-- **Communication:** gRPC for internal service calls
-- **Location:** `/ai-service` directory
-- **Model Format:** ONNX for production deployment
+## Related Documentation
 
-## Cost Optimization
-
-Target: ~$20/month MVP deployment
-
-- Use DigitalOcean/Hetzner for hosting
-- Optimize Docker images for smaller size
-- Implement aggressive caching strategies
-- Use connection pooling for database
-- Monitor and optimize expensive queries
-
-## Questions?
-
-Check `docs/SPEC_LINKS.md` or refer to the specs repository: <https://github.com/localstore-platform/specs>
+- [API Specification](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/api-specification.md)
+- [Database Schema](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/database-schema.md)
+- [Backend Setup Guide](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/backend-setup-guide.md)
