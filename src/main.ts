@@ -12,11 +12,11 @@ async function bootstrap() {
   // CORS configuration
   const isDevelopment = process.env.NODE_ENV !== 'production';
   app.enableCors({
-    origin: isDevelopment 
+    origin: isDevelopment
       ? (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
           // Allow requests with no origin (mobile apps, Postman, etc.)
           if (!origin) return callback(null, true);
-          
+
           // Allow localhost and local network (192.168.*.*)
           const allowedPatterns = [
             /^http:\/\/localhost(:\d+)?$/,
@@ -24,17 +24,14 @@ async function bootstrap() {
             /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$/,
             /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/,
           ];
-          
-          if (allowedPatterns.some(pattern => pattern.test(origin))) {
+
+          if (allowedPatterns.some((pattern) => pattern.test(origin))) {
             return callback(null, true);
           }
-          
+
           callback(new Error('Not allowed by CORS'));
         }
-      : process.env.CORS_ORIGINS?.split(',') || [
-          'http://localhost:3000',
-          'http://localhost:3001',
-        ],
+      : process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
