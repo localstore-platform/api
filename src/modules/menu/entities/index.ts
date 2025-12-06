@@ -1,3 +1,6 @@
+// Re-export enums from @localstore/contracts for convenience
+export { ItemStatus } from '@localstore/contracts';
+
 export * from './tenant.entity';
 export * from './location.entity';
 export * from './menu.entity';

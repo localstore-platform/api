@@ -1,7 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+// Type references from @localstore/contracts for documentation:
+// - PublicMenuResponse, MenuCategoryDto, MenuItemDto, MenuStoreInfoDto
+// - MenuCategoriesResponse, MenuItemDetailResponse
+// These types are exported from ./index.ts for consumers
+
 /**
  * DTO for item variant in public menu response
+ * @see MenuItemDetailResponse.item.variants in @localstore/contracts
  */
 export class MenuItemVariantDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440001' })
@@ -22,6 +28,7 @@ export class MenuItemVariantDto {
 
 /**
  * DTO for item add-on in public menu response
+ * @see MenuItemDetailResponse.item.add_ons in @localstore/contracts
  */
 export class MenuItemAddOnDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440002' })
@@ -48,6 +55,7 @@ export class MenuItemAddOnDto {
 
 /**
  * DTO for item image in public menu response
+ * @see MenuItemDetailResponse.item.images in @localstore/contracts
  */
 export class MenuItemImageDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440003' })
@@ -68,6 +76,8 @@ export class MenuItemImageDto {
 
 /**
  * DTO for individual menu item in public menu response
+ * Implements MenuItemDto from @localstore/contracts with additional fields
+ * @see MenuItemDto in @localstore/contracts
  */
 export class PublicMenuItemDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440004' })
@@ -124,6 +134,8 @@ export class PublicMenuItemDto {
 
 /**
  * DTO for category with items in public menu response
+ * Implements MenuCategoryDto from @localstore/contracts
+ * @see MenuCategoryDto in @localstore/contracts
  */
 export class PublicMenuCategoryDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
@@ -150,6 +162,8 @@ export class PublicMenuCategoryDto {
 
 /**
  * DTO for tenant/store information in public menu response
+ * Implements MenuStoreInfoDto from @localstore/contracts
+ * @see MenuStoreInfoDto in @localstore/contracts
  */
 export class PublicMenuStoreInfoDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -177,6 +191,8 @@ export class PublicMenuStoreInfoDto {
 /**
  * Main DTO for public menu response
  * GET /api/v1/menu/:tenantId
+ * Implements PublicMenuResponse from @localstore/contracts
+ * @see PublicMenuResponse in @localstore/contracts
  */
 export class PublicMenuResponseDto {
   @ApiProperty({ type: PublicMenuStoreInfoDto })
@@ -201,6 +217,8 @@ export class PublicMenuResponseDto {
 /**
  * DTO for categories-only response
  * GET /api/v1/menu/:tenantId/categories
+ * Implements MenuCategoriesResponse from @localstore/contracts
+ * @see MenuCategoriesResponse in @localstore/contracts
  */
 export class PublicMenuCategoriesResponseDto {
   @ApiProperty({ type: [PublicMenuCategoryDto] })
