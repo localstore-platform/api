@@ -26,7 +26,7 @@
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/run-seed.ts",
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:up:seed": "docker compose -f docker-compose.dev.yml --profile seed up -d",
-    "docker:down": "docker compose -f docker-compose.dev.yml down -v",
+    "docker:down": "docker compose -f docker-compose.dev.yml --profile seed --profile tools down -v --remove-orphans",
     "docker:build": "docker compose -f docker-compose.dev.yml build",
     "docker:logs": "docker logs localstore-api",
     "docker:logs:save": "mkdir -p logs && docker logs localstore-api > logs/api.log 2>&1",
