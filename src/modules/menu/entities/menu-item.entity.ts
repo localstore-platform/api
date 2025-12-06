@@ -10,6 +10,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
+import { ItemStatus } from '@localstore/contracts';
 import { Tenant } from './tenant.entity';
 import { Location } from './location.entity';
 import { Category } from './category.entity';
@@ -17,12 +18,8 @@ import { ItemVariant } from './item-variant.entity';
 import { ItemAddOn } from './item-add-on.entity';
 import { ItemImage } from './item-image.entity';
 
-export enum ItemStatus {
-  DRAFT = 'draft',
-  PUBLISHED = 'published',
-  ARCHIVED = 'archived',
-  OUT_OF_STOCK = 'out_of_stock',
-}
+// Re-export ItemStatus for backward compatibility
+export { ItemStatus };
 
 @Entity('menu_items')
 @Index('idx_menu_items_tenant_id', ['tenantId', 'status', 'displayOrder'], {
