@@ -18,6 +18,14 @@
 
 ---
 
+## Post-Sprint Tasks
+
+| Task | Description | Status | Notes |
+|------|-------------|-----------|-------|
+| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.2.0 with CJS support |
+
+---
+
 ## Spec References
 
 | Story | Specification | Lines |
@@ -38,7 +46,22 @@ All stories implemented. Ready for testing and PR.
 
 ## Session Notes
 
-### Session: 2025-12-06
+### Session: 2025-12-06 (Contracts Integration)
+
+- Started: Integrate @localstore/contracts for shared types
+- Actions:
+  - Installed `@localstore/contracts@0.1.0` (ESM-only, blocked Jest)
+  - Posted BUILD_REQUEST to #agent-events for contracts repo
+  - contracts published v0.2.0 with dual CJS/ESM build
+  - Updated to `@localstore/contracts@0.2.0`
+  - Reverted jest.config.js to simple config (no longer needed ESM workarounds)
+- Completed:
+  - `ItemStatus` enum imported from contracts in entities
+  - DTO types re-exported from contracts in dto/index.ts
+  - All 14 tests passing
+- Next: Create PR for contracts integration
+
+### Session: 2025-12-06 (Sprint 0.5)
 
 - Started: Story 2.1, 2.2, 2.3 (Full Sprint)
 - Completed:
