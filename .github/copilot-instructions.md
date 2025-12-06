@@ -57,7 +57,13 @@ After implementation, **update `docs/CURRENT_WORK.md`**:
 
 1. Create/use feature branch: `feat/<story-description>`
 2. Commit with conventional message
-3. Run `npm run lint && npm run test`
+3. Start Docker and run all tests:
+   ```bash
+   pnpm run docker:up:seed              # Start services with sample data
+   pnpm run lint                        # Check code quality
+   pnpm run test                        # Run unit tests
+   pnpm run test:api                    # Run Postman/Newman API tests
+   ```
 4. Create PR when story is complete
 
 ### Step 7: Post Event to Slack
@@ -116,15 +122,34 @@ Also check `docs/SPEC_LINKS.md` for curated links with line numbers.
 ## Build & Test Commands
 
 ```bash
-npm install              # Install dependencies
-docker-compose up -d postgres redis  # Start DB and cache
-npm run start:dev        # Start development server
-npm run test             # Run unit tests
-npm run test:e2e         # Run E2E tests
-npm run lint             # Lint code
-npm run migration:run    # Run database migrations
-npm run seed             # Seed database with sample data
-npm run build            # Build for production
+pnpm install             # Install dependencies
+pnpm run start:dev       # Start development server
+pnpm run test            # Run unit tests
+pnpm run test:e2e        # Run E2E tests
+pnpm run test:api        # Run Postman/Newman API tests
+pnpm run lint            # Lint code
+pnpm run build           # Build for production
+```
+
+---
+
+## Docker Commands
+
+```bash
+# Development (uses docker-compose.dev.yml)
+pnpm run docker:up       # Start postgres, redis, migrate, and api
+pnpm run docker:up:seed  # Start with sample data (includes seed)
+pnpm run docker:down     # Stop and remove containers + volumes
+pnpm run docker:reset    # Full reset with seed data
+pnpm run docker:logs     # View API container logs
+
+# Manual Docker Compose
+docker compose -f docker-compose.dev.yml up -d              # Start dev environment
+docker compose -f docker-compose.dev.yml --profile seed up  # Include seed data
+docker compose -f docker-compose.dev.yml down -v            # Stop and clean volumes
+
+# Production (uses docker-compose.yml for EC2)
+docker compose up -d     # Start production environment
 ```
 
 ---
