@@ -1,15 +1,15 @@
-version: '3.8'
+# Docker Compose for LocalStore API - Production/EC2
+# PostgreSQL 17, Redis 8, NestJS API
 
 services:
   postgres:
-    image: postgres:14-alpine
+    image: postgres:17-alpine
     container_name: localstore-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: localstore_dev
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - '5432:5432'
+      POSTGRES_DB: ${DATABASE_NAME:-localstore}
+      POSTGRES_USER: ${DATABASE_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Database password required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -22,10 +22,10 @@ services:
       - localstore-network
 
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: localstore-redis
-    ports:
-      - '6379:6379'
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     healthcheck:
@@ -37,52 +37,37 @@ services:
       - localstore-network
 
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: development
+    image: ${API_IMAGE:-localstore/api:latest}
     container_name: localstore-api
+    restart: unless-stopped
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
+      - PORT=8080
       - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
-      - DATABASE_NAME=localstore_dev
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=${DATABASE_NAME:-localstore}
+      - DATABASE_USERNAME=${DATABASE_USERNAME:-postgres}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD:?Database password required}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     ports:
-      - '3000:3000'
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - '8080:8080'
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    command: npm run start:dev
-    networks:
-      - localstore-network
-
-  ai-service:
-    build:
-      context: ./ai-service
-      dockerfile: Dockerfile
-    container_name: localstore-ai-service
-    environment:
-      - ENVIRONMENT=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    ports:
-      - '8000:8000'
-      - '50051:50051'
-    volumes:
-      - ./ai-service:/app
-      - ai_models:/app/models
-    depends_on:
-      redis:
-        condition: service_healthy
+    logging:
+      driver: local
+      options:
+        max-size: '50m'
+        max-file: '5'
+    healthcheck:
+      test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:8080/api/v1/health']
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
     networks:
       - localstore-network
 
@@ -90,8 +75,6 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
-    driver: local
-  ai_models:
     driver: local
 
 networks:

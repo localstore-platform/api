@@ -1,0 +1,350 @@
+{
+  "info": {
+    "name": "LocalStore API",
+    "_postman_id": "localstore-api-collection",
+    "description": "LocalStore Platform API - Vietnamese-first multi-tenant SaaS backend\n\nBase URL: http://localhost:8080/api/v1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "tenantId",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string"
+    },
+    {
+      "key": "itemId",
+      "value": "550e8400-e29b-41d4-a716-446655440040",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "description": "Health check endpoints",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct structure', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('status', 'ok');",
+                  "    pm.expect(jsonData).to.have.property('timestamp');",
+                  "    pm.expect(jsonData).to.have.property('uptime');",
+                  "    pm.expect(jsonData).to.have.property('version');",
+                  "});",
+                  "",
+                  "pm.test('Uptime is a positive number', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.uptime).to.be.a('number');",
+                  "    pm.expect(jsonData.uptime).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Basic health check endpoint"
+          }
+        },
+        {
+          "name": "Readiness Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has ready status', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('status', 'ready');",
+                  "    pm.expect(jsonData).to.have.property('timestamp');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health/ready",
+              "host": ["{{baseUrl}}"],
+              "path": ["health", "ready"]
+            },
+            "description": "Readiness check endpoint for Kubernetes/load balancers"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "description": "Public menu endpoints",
+      "item": [
+        {
+          "name": "Get Public Menu",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has store info', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('store');",
+                  "    pm.expect(jsonData.store).to.have.property('id');",
+                  "    pm.expect(jsonData.store).to.have.property('businessName');",
+                  "    pm.expect(jsonData.store).to.have.property('locale', 'vi-VN');",
+                  "    pm.expect(jsonData.store).to.have.property('currency', 'VND');",
+                  "});",
+                  "",
+                  "pm.test('Response has categories array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('categories');",
+                  "    pm.expect(jsonData.categories).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Response has meta info', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('meta');",
+                  "    pm.expect(jsonData.meta).to.have.property('timestamp');",
+                  "    pm.expect(jsonData.meta).to.have.property('tenantId');",
+                  "});",
+                  "",
+                  "pm.test('Categories have items with Vietnamese names', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.categories.length > 0) {",
+                  "        const firstCategory = jsonData.categories[0];",
+                  "        pm.expect(firstCategory).to.have.property('name');",
+                  "        pm.expect(firstCategory).to.have.property('items');",
+                  "        pm.expect(firstCategory.items).to.be.an('array');",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test('Menu items have correct structure', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.categories.length > 0 && jsonData.categories[0].items.length > 0) {",
+                  "        const item = jsonData.categories[0].items[0];",
+                  "        pm.expect(item).to.have.property('id');",
+                  "        pm.expect(item).to.have.property('name');",
+                  "        pm.expect(item).to.have.property('price');",
+                  "        pm.expect(item).to.have.property('currency', 'VND');",
+                  "        pm.expect(item).to.have.property('isAvailable');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{tenantId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{tenantId}}"]
+            },
+            "description": "Get full public menu for a tenant including store info, categories, and items"
+          }
+        },
+        {
+          "name": "Get Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has categories array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('categories');",
+                  "    pm.expect(jsonData.categories).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Response has meta with counts', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('meta');",
+                  "    pm.expect(jsonData.meta).to.have.property('totalCategories');",
+                  "    pm.expect(jsonData.meta).to.have.property('totalItems');",
+                  "    pm.expect(jsonData.meta.totalCategories).to.be.a('number');",
+                  "    pm.expect(jsonData.meta.totalItems).to.be.a('number');",
+                  "});",
+                  "",
+                  "pm.test('Categories have displayOrder', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.categories.length > 0) {",
+                  "        pm.expect(jsonData.categories[0]).to.have.property('displayOrder');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{tenantId}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{tenantId}}", "categories"]
+            },
+            "description": "Get categories list with items for a tenant"
+          }
+        },
+        {
+          "name": "Get Menu Item",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has item details', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('name');",
+                  "    pm.expect(jsonData).to.have.property('price');",
+                  "    pm.expect(jsonData).to.have.property('currency');",
+                  "});",
+                  "",
+                  "pm.test('Item has Vietnamese name', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.name).to.be.a('string');",
+                  "    pm.expect(jsonData.name.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test('Item has variants array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('variants');",
+                  "    pm.expect(jsonData.variants).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Item has addOns array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('addOns');",
+                  "    pm.expect(jsonData.addOns).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Price is in VND', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.currency).to.equal('VND');",
+                  "    pm.expect(jsonData.price).to.be.a('number');",
+                  "    pm.expect(jsonData.price).to.be.at.least(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{tenantId}}/items/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{tenantId}}", "items", "{{itemId}}"]
+            },
+            "description": "Get a single menu item with variants and add-ons"
+          }
+        },
+        {
+          "name": "Get Menu - Invalid Tenant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has error details', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/00000000-0000-0000-0000-000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "00000000-0000-0000-0000-000000000000"]
+            },
+            "description": "Test 404 response for non-existent tenant"
+          }
+        },
+        {
+          "name": "Get Menu Item - Invalid Item",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has error details', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{tenantId}}/items/00000000-0000-0000-0000-000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{tenantId}}", "items", "00000000-0000-0000-0000-000000000000"]
+            },
+            "description": "Test 404 response for non-existent menu item"
+          }
+        }
+      ]
+    }
+  ]
+}

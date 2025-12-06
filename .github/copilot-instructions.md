@@ -57,7 +57,13 @@ After implementation, **update `docs/CURRENT_WORK.md`**:
 
 1. Create/use feature branch: `feat/<story-description>`
 2. Commit with conventional message
-3. Run `npm run lint && npm run test`
+3. Start Docker and run all tests:
+   ```bash
+   pnpm run docker:up:seed              # Start services with sample data
+   pnpm run lint                        # Check code quality
+   pnpm run test                        # Run unit tests
+   pnpm run test:api                    # Run Postman/Newman API tests
+   ```
 4. Create PR when story is complete
 
 ### Step 7: Post Event to Slack
@@ -116,15 +122,34 @@ Also check `docs/SPEC_LINKS.md` for curated links with line numbers.
 ## Build & Test Commands
 
 ```bash
-npm install              # Install dependencies
-docker-compose up -d postgres redis  # Start DB and cache
-npm run start:dev        # Start development server
-npm run test             # Run unit tests
-npm run test:e2e         # Run E2E tests
-npm run lint             # Lint code
-npm run migration:run    # Run database migrations
-npm run seed             # Seed database with sample data
-npm run build            # Build for production
+pnpm install             # Install dependencies
+pnpm run start:dev       # Start development server
+pnpm run test            # Run unit tests
+pnpm run test:e2e        # Run E2E tests
+pnpm run test:api        # Run Postman/Newman API tests
+pnpm run lint            # Lint code
+pnpm run build           # Build for production
+```
+
+---
+
+## Docker Commands
+
+```bash
+# Development (uses docker-compose.dev.yml)
+pnpm run docker:up       # Start postgres, redis, migrate, and api
+pnpm run docker:up:seed  # Start with sample data (includes seed)
+pnpm run docker:down     # Stop and remove containers + volumes
+pnpm run docker:reset    # Full reset with seed data
+pnpm run docker:logs     # View API container logs
+
+# Manual Docker Compose
+docker compose -f docker-compose.dev.yml up -d              # Start dev environment
+docker compose -f docker-compose.dev.yml --profile seed up  # Include seed data
+docker compose -f docker-compose.dev.yml down -v            # Stop and clean volumes
+
+# Production (uses docker-compose.yml for EC2)
+docker compose up -d     # Start production environment
 ```
 
 ---
@@ -192,10 +217,53 @@ src/
 
 **CRITICAL:** Follow `docs/GIT_WORKFLOW.md`:
 
-- Never commit directly to main branch
-- Branch naming: `feat/<story-description>` (e.g., `feat/menu-rest-api`)
-- Use conventional commit messages
-- Create PR after commits
+### Never Commit Directly to Main
+
+- **Always** create a new branch for changes
+- If currently on `main`, checkout to a new branch before committing
+- Branch naming: `<type>/<short-description>`
+
+### Branch Naming Types
+
+| Type | Description |
+|------|-------------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `chore` | Maintenance, dependencies, tooling |
+| `docs` | Documentation only |
+| `refactor` | Code refactoring |
+| `test` | Adding or updating tests |
+
+### Logical Commits
+
+- Group related changes into logical commits
+- Each commit should represent a single logical change
+- Use conventional commit format:
+
+```text
+<type>: <short description>
+
+- Detail 1
+- Detail 2
+```
+
+### Commit Granularity Principle
+
+Each commit should answer ONE question: "What single feature/fix does this add?"
+
+**Rule of thumb:** If you need "and" to describe the commit, split it.
+
+- ❌ `Add docs and config files` → Split
+- ✅ `Add GitHub PR template and CODEOWNERS` → OK (same purpose: GitHub config)
+
+### Pull Request Workflow
+
+After committing:
+
+1. Push the branch to origin
+2. Create a PR to `main` branch
+3. If PR already exists, update the title and description
+4. **Do not wait for confirmation** - push and create PR automatically
 
 ---
 
