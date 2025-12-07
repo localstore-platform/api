@@ -28,6 +28,7 @@
     "migration:revert:prod": "pnpm typeorm:prod migration:revert -d dist/migrations/src/config/typeorm.config.js",
     "migration:build": "tsc -p tsconfig.migrations.json",
     "seed": "ts-node -r tsconfig-paths/register src/database/seeds/run-seed.ts",
+    "seed:compiled": "node dist/migrations/src/database/seeds/run-seed.js",
     "docker:up": "docker compose -f docker-compose.dev.yml up -d",
     "docker:up:seed": "docker compose -f docker-compose.dev.yml --profile seed up -d --build --force-recreate",
     "docker:down": "docker compose -f docker-compose.dev.yml --profile seed --profile tools down -v --remove-orphans",

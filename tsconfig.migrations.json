@@ -9,7 +9,8 @@
   },
   "include": [
     "migrations/**/*.ts",
-    "src/config/typeorm.config.ts"
+    "src/config/typeorm.config.ts",
+    "src/database/seeds/**/*.ts"
   ],
   "exclude": [
     "node_modules",
