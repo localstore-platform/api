@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/migrations",
+    "rootDir": ".",
+    "module": "commonjs",
+    "declaration": false,
+    "sourceMap": false
+  },
+  "include": [
+    "migrations/**/*.ts",
+    "src/config/typeorm.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
+  ]
+}

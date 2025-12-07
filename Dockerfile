@@ -45,6 +45,9 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
+# Build migrations (compile TS migrations to JS for production)
+RUN pnpm run migration:build
+
 # Prune devDependencies
 RUN pnpm prune --prod
 
@@ -58,7 +61,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Copy built application and production dependencies
+# Copy built application, compiled migrations, and production dependencies
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/package.json ./
