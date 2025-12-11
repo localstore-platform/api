@@ -9,10 +9,12 @@ import { NotFoundException } from '@nestjs/common';
 describe('MenuService', () => {
   let service: MenuService;
 
+  const mockTenantSlug = 'pho-hanoi-24';
   const mockTenantId = '550e8400-e29b-41d4-a716-446655440000';
 
   const mockTenant = {
     id: mockTenantId,
+    slug: mockTenantSlug,
     businessName: 'Phở Hà Nội 24',
     businessType: 'restaurant',
     address: '123 Nguyễn Huệ, Quận 1',
@@ -22,8 +24,10 @@ describe('MenuService', () => {
     status: 'active',
   };
 
+  const mockCategorySlug = 'pho';
   const mockCategory = {
     id: '550e8400-e29b-41d4-a716-446655440030',
+    slug: mockCategorySlug,
     nameVi: 'Phở',
     nameEn: 'Pho',
     displayOrder: 1,
@@ -31,8 +35,10 @@ describe('MenuService', () => {
     tenantId: mockTenantId,
   };
 
+  const mockItemSlug = 'pho-bo-tai';
   const mockMenuItem = {
     id: '550e8400-e29b-41d4-a716-446655440040',
+    slug: mockItemSlug,
     nameVi: 'Phở Bò Tái',
     nameEn: 'Rare Beef Pho',
     descriptionVi: 'Phở bò tái mềm',
@@ -58,6 +64,7 @@ describe('MenuService', () => {
 
   const mockCategoryRepository = {
     find: jest.fn(),
+    findOne: jest.fn(),
   };
 
   const mockMenuItemRepository = {
@@ -96,18 +103,18 @@ describe('MenuService', () => {
   });
 
   describe('getPublicMenu', () => {
-    it('should throw NotFoundException when tenant not found', async () => {
+    it('should throw NotFoundException when tenant slug not found', async () => {
       mockTenantRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.getPublicMenu('invalid-id')).rejects.toThrow(NotFoundException);
+      await expect(service.getPublicMenu('invalid-slug')).rejects.toThrow(NotFoundException);
     });
 
-    it('should return public menu when tenant exists', async () => {
+    it('should return public menu when tenant slug exists', async () => {
       mockTenantRepository.findOne.mockResolvedValue(mockTenant);
       mockCategoryRepository.find.mockResolvedValue([mockCategory]);
       mockMenuItemRepository.find.mockResolvedValue([mockMenuItem]);
 
-      const result = await service.getPublicMenu(mockTenantId);
+      const result = await service.getPublicMenu(mockTenantSlug);
 
       expect(result).toHaveProperty('store');
       expect(result).toHaveProperty('categories');
@@ -119,18 +126,18 @@ describe('MenuService', () => {
   });
 
   describe('getCategories', () => {
-    it('should throw NotFoundException when tenant not found', async () => {
+    it('should throw NotFoundException when tenant slug not found', async () => {
       mockTenantRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.getCategories('invalid-id')).rejects.toThrow(NotFoundException);
+      await expect(service.getCategories('invalid-slug')).rejects.toThrow(NotFoundException);
     });
 
-    it('should return categories when tenant exists', async () => {
+    it('should return categories when tenant slug exists', async () => {
       mockTenantRepository.findOne.mockResolvedValue(mockTenant);
       mockCategoryRepository.find.mockResolvedValue([mockCategory]);
       mockMenuItemRepository.find.mockResolvedValue([mockMenuItem]);
 
-      const result = await service.getCategories(mockTenantId);
+      const result = await service.getCategories(mockTenantSlug);
 
       expect(result).toHaveProperty('categories');
       expect(result).toHaveProperty('meta');
@@ -139,23 +146,84 @@ describe('MenuService', () => {
     });
   });
 
-  describe('getMenuItem', () => {
-    it('should throw NotFoundException when item not found', async () => {
-      mockMenuItemRepository.findOne.mockResolvedValue(null);
+  describe('getMenuItemBySlug', () => {
+    it('should throw NotFoundException when tenant slug not found', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.getMenuItem(mockTenantId, 'invalid-id')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.getMenuItemBySlug('invalid-slug', mockCategorySlug, mockItemSlug),
+      ).rejects.toThrow(NotFoundException);
     });
 
-    it('should return menu item when found', async () => {
+    it('should throw NotFoundException when category slug not found', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(mockTenant);
+      mockCategoryRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.getMenuItemBySlug(mockTenantSlug, 'invalid-category', mockItemSlug),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw NotFoundException when item slug not found', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(mockTenant);
+      mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
+      mockMenuItemRepository.findOne.mockResolvedValue(null);
+
+      await expect(
+        service.getMenuItemBySlug(mockTenantSlug, mockCategorySlug, 'invalid-item'),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should return menu item when found by slug', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(mockTenant);
+      mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
       mockMenuItemRepository.findOne.mockResolvedValue(mockMenuItem);
 
-      const result = await service.getMenuItem(mockTenantId, mockMenuItem.id);
+      const result = await service.getMenuItemBySlug(
+        mockTenantSlug,
+        mockCategorySlug,
+        mockItemSlug,
+      );
 
       expect(result).toHaveProperty('id', mockMenuItem.id);
       expect(result).toHaveProperty('name', 'Phở Bò Tái');
       expect(result).toHaveProperty('price', 75000);
+    });
+  });
+
+  describe('getCategoryItems', () => {
+    it('should throw NotFoundException when tenant slug not found', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.getCategoryItems('invalid-slug', mockCategorySlug)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should throw NotFoundException when category not found', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(mockTenant);
+      mockCategoryRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.getCategoryItems(mockTenantSlug, 'invalid-slug')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should return category items when found', async () => {
+      mockTenantRepository.findOne.mockResolvedValue(mockTenant);
+      mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
+      mockMenuItemRepository.find.mockResolvedValue([mockMenuItem]);
+
+      const result = await service.getCategoryItems(mockTenantSlug, mockCategorySlug);
+
+      expect(result).toHaveProperty('store');
+      expect(result).toHaveProperty('category');
+      expect(result).toHaveProperty('items');
+      expect(result).toHaveProperty('totalItems', 1);
+      expect(result.store.businessName).toBe('Phở Hà Nội 24');
+      expect(result.category.name).toBe('Phở');
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0].name).toBe('Phở Bò Tái');
     });
   });
 });

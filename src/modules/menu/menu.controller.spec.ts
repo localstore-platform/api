@@ -6,19 +6,23 @@ describe('MenuController', () => {
   let controller: MenuController;
   let service: MenuService;
 
+  const mockTenantSlug = 'pho-hanoi-24';
   const mockTenantId = '550e8400-e29b-41d4-a716-446655440000';
-  const mockItemId = '550e8400-e29b-41d4-a716-446655440040';
+  const mockCategorySlug = 'pho';
+  const mockItemSlug = 'pho-bo-tai';
+
+  const mockStoreInfo = {
+    id: mockTenantId,
+    businessName: 'Phở Hà Nội 24',
+    businessType: 'restaurant',
+    address: '123 Nguyễn Huệ',
+    phone: '+84912345678',
+    locale: 'vi-VN',
+    currency: 'VND',
+  };
 
   const mockPublicMenuResponse = {
-    store: {
-      id: mockTenantId,
-      businessName: 'Phở Hà Nội 24',
-      businessType: 'restaurant',
-      address: '123 Nguyễn Huệ',
-      phone: '+84912345678',
-      locale: 'vi-VN',
-      currency: 'VND',
-    },
+    store: mockStoreInfo,
     categories: [],
     meta: {
       timestamp: new Date().toISOString(),
@@ -37,7 +41,8 @@ describe('MenuController', () => {
   };
 
   const mockMenuItemResponse = {
-    id: mockItemId,
+    id: '550e8400-e29b-41d4-a716-446655440040',
+    slug: mockItemSlug,
     name: 'Phở Bò Tái',
     nameEn: 'Rare Beef Pho',
     description: 'Phở bò tái mềm',
@@ -54,10 +59,25 @@ describe('MenuController', () => {
     images: [],
   };
 
+  const mockCategoryItemsResponse = {
+    store: mockStoreInfo,
+    category: {
+      id: '550e8400-e29b-41d4-a716-446655440030',
+      slug: mockCategorySlug,
+      name: 'Phở',
+      nameEn: 'Pho',
+      description: 'Các món phở truyền thống Việt Nam',
+      displayOrder: 1,
+    },
+    items: [mockMenuItemResponse],
+    totalItems: 1,
+  };
+
   const mockMenuService = {
     getPublicMenu: jest.fn(),
     getCategories: jest.fn(),
-    getMenuItem: jest.fn(),
+    getMenuItemBySlug: jest.fn(),
+    getCategoryItems: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -84,34 +104,49 @@ describe('MenuController', () => {
   });
 
   describe('getPublicMenu', () => {
-    it('should return public menu for valid tenant', async () => {
+    it('should return public menu for valid tenant slug', async () => {
       mockMenuService.getPublicMenu.mockResolvedValue(mockPublicMenuResponse);
 
-      const result = await controller.getPublicMenu(mockTenantId);
+      const result = await controller.getPublicMenu(mockTenantSlug);
 
-      expect(service.getPublicMenu).toHaveBeenCalledWith(mockTenantId);
+      expect(service.getPublicMenu).toHaveBeenCalledWith(mockTenantSlug);
       expect(result).toEqual(mockPublicMenuResponse);
     });
   });
 
   describe('getCategories', () => {
-    it('should return categories for valid tenant', async () => {
+    it('should return categories for valid tenant slug', async () => {
       mockMenuService.getCategories.mockResolvedValue(mockCategoriesResponse);
 
-      const result = await controller.getCategories(mockTenantId);
+      const result = await controller.getCategories(mockTenantSlug);
 
-      expect(service.getCategories).toHaveBeenCalledWith(mockTenantId);
+      expect(service.getCategories).toHaveBeenCalledWith(mockTenantSlug);
       expect(result).toEqual(mockCategoriesResponse);
     });
   });
 
+  describe('getCategoryItems', () => {
+    it('should return items for valid tenant slug and category slug', async () => {
+      mockMenuService.getCategoryItems.mockResolvedValue(mockCategoryItemsResponse);
+
+      const result = await controller.getCategoryItems(mockTenantSlug, mockCategorySlug);
+
+      expect(service.getCategoryItems).toHaveBeenCalledWith(mockTenantSlug, mockCategorySlug);
+      expect(result).toEqual(mockCategoryItemsResponse);
+    });
+  });
+
   describe('getMenuItem', () => {
-    it('should return menu item for valid tenant and item', async () => {
-      mockMenuService.getMenuItem.mockResolvedValue(mockMenuItemResponse);
+    it('should return menu item for valid tenant, category, and item slugs', async () => {
+      mockMenuService.getMenuItemBySlug.mockResolvedValue(mockMenuItemResponse);
 
-      const result = await controller.getMenuItem(mockTenantId, mockItemId);
+      const result = await controller.getMenuItem(mockTenantSlug, mockCategorySlug, mockItemSlug);
 
-      expect(service.getMenuItem).toHaveBeenCalledWith(mockTenantId, mockItemId);
+      expect(service.getMenuItemBySlug).toHaveBeenCalledWith(
+        mockTenantSlug,
+        mockCategorySlug,
+        mockItemSlug,
+      );
       expect(result).toEqual(mockMenuItemResponse);
     });
   });
