@@ -35,7 +35,7 @@ async function runSeed() {
       [
         tenantId,
         'Phở Hà Nội 24',
-        'pho-ha-noi-24',
+        'pho-hanoi-24',
         'restaurant',
         '+84912345678',
         '123 Nguyễn Huệ, Quận 1',
@@ -80,19 +80,39 @@ async function runSeed() {
 
     // Insert sample categories
     const categories = [
-      { id: '550e8400-e29b-41d4-a716-446655440030', nameVi: 'Phở', nameEn: 'Pho', order: 1 },
-      { id: '550e8400-e29b-41d4-a716-446655440031', nameVi: 'Bún', nameEn: 'Noodles', order: 2 },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440030',
+        nameVi: 'Phở',
+        nameEn: 'Pho',
+        slug: 'pho',
+        order: 1,
+      },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440031',
+        nameVi: 'Bún',
+        nameEn: 'Noodles',
+        slug: 'bun',
+        order: 2,
+      },
       {
         id: '550e8400-e29b-41d4-a716-446655440032',
         nameVi: 'Cơm',
         nameEn: 'Rice Dishes',
+        slug: 'com',
         order: 3,
       },
-      { id: '550e8400-e29b-41d4-a716-446655440033', nameVi: 'Đồ Uống', nameEn: 'Drinks', order: 4 },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440033',
+        nameVi: 'Đồ Uống',
+        nameEn: 'Drinks',
+        slug: 'do-uong',
+        order: 4,
+      },
       {
         id: '550e8400-e29b-41d4-a716-446655440034',
         nameVi: 'Tráng Miệng',
         nameEn: 'Desserts',
+        slug: 'trang-mieng',
         order: 5,
       },
     ];
@@ -100,10 +120,10 @@ async function runSeed() {
     for (const cat of categories) {
       await dataSource.query(
         `
-        INSERT INTO categories (id, tenant_id, menu_id, name_vi, name_en, display_order, is_active)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        INSERT INTO categories (id, tenant_id, menu_id, name_vi, name_en, slug, display_order, is_active)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       `,
-        [cat.id, tenantId, menuId, cat.nameVi, cat.nameEn, cat.order, true],
+        [cat.id, tenantId, menuId, cat.nameVi, cat.nameEn, cat.slug, cat.order, true],
       );
     }
     console.log('✅ Created 5 sample categories');
@@ -116,6 +136,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440030',
         nameVi: 'Phở Bò Tái',
         nameEn: 'Rare Beef Pho',
+        slug: 'pho-bo-tai',
         descVi: 'Phở bò tái mềm, nước dùng thanh ngọt từ xương bò hầm 12 tiếng',
         descEn: 'Rare beef pho with light sweet broth simmered for 12 hours',
         price: 75000,
@@ -127,6 +148,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440030',
         nameVi: 'Phở Bò Chín',
         nameEn: 'Well-done Beef Pho',
+        slug: 'pho-bo-chin',
         descVi: 'Phở bò chín thái lát, nước dùng đậm đà',
         descEn: 'Sliced well-done beef pho with rich broth',
         price: 75000,
@@ -138,6 +160,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440030',
         nameVi: 'Phở Gà',
         nameEn: 'Chicken Pho',
+        slug: 'pho-ga',
         descVi: 'Phở gà ta thả vườn, thịt gà dai ngọt',
         descEn: 'Free-range chicken pho with tender meat',
         price: 65000,
@@ -149,6 +172,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440030',
         nameVi: 'Phở Đặc Biệt',
         nameEn: 'Special Pho',
+        slug: 'pho-dac-biet',
         descVi: 'Phở đặc biệt với tái, chín, nạm, gầu, gân',
         descEn: 'Special pho with all types of beef cuts',
         price: 95000,
@@ -161,6 +185,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440031',
         nameVi: 'Bún Bò Huế',
         nameEn: 'Hue Style Beef Noodles',
+        slug: 'bun-bo-hue',
         descVi: 'Bún bò Huế cay nồng, giò heo, chả cua',
         descEn: 'Spicy Hue style beef noodles with pork knuckle and crab cake',
         price: 85000,
@@ -173,6 +198,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440031',
         nameVi: 'Bún Chả Hà Nội',
         nameEn: 'Hanoi Grilled Pork Noodles',
+        slug: 'bun-cha-ha-noi',
         descVi: 'Bún chả thịt nướng than hoa, nước mắm pha chua ngọt',
         descEn: 'Charcoal grilled pork with rice noodles and fish sauce',
         price: 70000,
@@ -185,6 +211,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440032',
         nameVi: 'Cơm Tấm Sườn Bì Chả',
         nameEn: 'Broken Rice with Pork',
+        slug: 'com-tam-suon-bi-cha',
         descVi: 'Cơm tấm sườn nướng, bì, chả trứng',
         descEn: 'Broken rice with grilled pork, shredded pork skin, and egg cake',
         price: 65000,
@@ -196,6 +223,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440032',
         nameVi: 'Cơm Gà Xối Mỡ',
         nameEn: 'Crispy Chicken Rice',
+        slug: 'com-ga-xoi-mo',
         descVi: 'Cơm gà xối mỡ giòn tan, da vàng ươm',
         descEn: 'Crispy fried chicken with rice, golden skin',
         price: 70000,
@@ -208,6 +236,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440033',
         nameVi: 'Cà Phê Sữa Đá',
         nameEn: 'Iced Milk Coffee',
+        slug: 'ca-phe-sua-da',
         descVi: 'Cà phê phin truyền thống với sữa đặc Ông Thọ',
         descEn: 'Traditional drip coffee with condensed milk',
         price: 25000,
@@ -219,6 +248,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440033',
         nameVi: 'Trà Đá',
         nameEn: 'Iced Tea',
+        slug: 'tra-da',
         descVi: 'Trà đá miễn phí',
         descEn: 'Free iced tea',
         price: 0,
@@ -230,6 +260,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440033',
         nameVi: 'Nước Chanh Đường',
         nameEn: 'Lemonade',
+        slug: 'nuoc-chanh-duong',
         descVi: 'Nước chanh tươi đường phèn',
         descEn: 'Fresh lemonade with rock sugar',
         price: 20000,
@@ -242,6 +273,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440034',
         nameVi: 'Chè Thái',
         nameEn: 'Thai Dessert Soup',
+        slug: 'che-thai',
         descVi: 'Chè thái với nhãn, vải, mít, nước cốt dừa',
         descEn: 'Thai style dessert with longan, lychee, jackfruit, and coconut milk',
         price: 30000,
@@ -253,6 +285,7 @@ async function runSeed() {
         categoryId: '550e8400-e29b-41d4-a716-446655440034',
         nameVi: 'Bánh Flan',
         nameEn: 'Caramel Flan',
+        slug: 'banh-flan',
         descVi: 'Bánh flan mềm mịn, caramel thơm ngọt',
         descEn: 'Smooth caramel flan',
         price: 25000,
@@ -265,11 +298,11 @@ async function runSeed() {
       await dataSource.query(
         `
         INSERT INTO menu_items (
-          id, tenant_id, category_id, name_vi, name_en, 
+          id, tenant_id, category_id, name_vi, name_en, slug,
           description_vi, description_en, base_price, 
           display_order, is_featured, is_spicy, status, published_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'published', NOW())
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'published', NOW())
       `,
         [
           item.id,
@@ -277,6 +310,7 @@ async function runSeed() {
           item.categoryId,
           item.nameVi,
           item.nameEn,
+          item.slug,
           item.descVi,
           item.descEn,
           item.price,
