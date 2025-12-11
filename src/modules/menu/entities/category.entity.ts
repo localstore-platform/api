@@ -17,6 +17,7 @@ import { MenuItem } from './menu-item.entity';
 @Entity('categories')
 @Index('idx_categories_tenant_id', ['tenantId', 'displayOrder'], { where: 'deleted_at IS NULL' })
 @Index('idx_categories_menu_id', ['menuId'], { where: 'deleted_at IS NULL' })
+@Index('idx_categories_tenant_slug', ['tenantId', 'slug'], { where: 'deleted_at IS NULL' })
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -44,6 +45,9 @@ export class Category {
 
   @OneToMany(() => Category, (category) => category.parent)
   children: Category[];
+
+  @Column({ length: 100 })
+  slug: string;
 
   @Column({ name: 'name_vi', length: 255 })
   nameVi: string;

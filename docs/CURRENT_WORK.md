@@ -1,7 +1,8 @@
 # Current Work – API Repository
 
-> **Last Updated:** 2025-12-06  
-> **Current Sprint:** Sprint 0.5 (Menu Demo)  
+> **Last Updated:** 2025-12-12  
+> **Current Sprint:** Sprint 0.5 (Menu Demo) - **COMPLETE**  
+> **Current Version:** v1.1.0  
 > **Sprint Spec:** [planning/sprint-0.5-menu-demo.md](https://github.com/localstore-platform/specs/blob/master/planning/sprint-0.5-menu-demo.md)
 
 ---
@@ -10,7 +11,7 @@
 
 | Story | Description | Status | Notes |
 |-------|-------------|--------|-------|
-| 2.1 | Menu API Endpoints | ✅ Done | GET /api/v1/menu/:tenantId, /categories, /items/:itemId |
+| 2.1 | Menu API Endpoints | ✅ Done | GET /menu/:tenantSlug, /:categorySlug, /:categorySlug/:itemSlug |
 | 2.2 | Mock Data Seeder | ✅ Done | Vietnamese sample menu with 13 items |
 | 2.3 | Health Check & CORS | ✅ Done | /health, /health/ready endpoints + CORS config |
 
@@ -22,7 +23,8 @@
 
 | Task | Description | Status | Notes |
 |------|-------------|-----------|-------|
-| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.2.0 with CJS support |
+| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.2.2 with CategoryItemsResponse |
+| SEO-friendly URL Routing | Use slugs for tenant, category, and items | ✅ Done | /menu/:tenantSlug/:categorySlug/:itemSlug |
 
 ---
 
@@ -38,28 +40,80 @@
 
 ## Current Focus
 
-**✅ Sprint 0.5 Complete!**
+**✅ v1.1.0 Released!**
 
-All stories implemented. Ready for testing and PR.
+Sprint 0.5 complete with SEO-friendly URL routing. Ready for next sprint.
 
 ---
 
 ## Session Notes
 
-### Session: 2025-12-06 (Contracts Integration)
+### Session: 2025-12-12 (v1.1.0 Release)
 
-- Started: Integrate @localstore/contracts for shared types
+**Release Summary:**
+
+- **Version:** 1.1.0
+- **Branch:** feat/v1.3-tenant-slug-routing
+- **Tests:** 20 unit tests + 30 API assertions passing
+
+**Commits:**
+
+1. `feat: add SEO-friendly slug routing for categories and items`
+2. `feat: add slugs to seed data for Vietnamese menu items`
+3. `test: update unit tests for SEO-friendly slug routing`
+4. `docs: update documentation and Postman collection for v1.1.0`
+5. `chore: bump version to 1.1.0, update contracts to v0.2.2`
+
+**Changes:**
+
+- Implemented full SEO-friendly URL structure:
+  - `GET /menu/:tenantSlug` → Full menu
+  - `GET /menu/:tenantSlug/categories` → Categories list
+  - `GET /menu/:tenantSlug/:categorySlug` → Items in category
+  - `GET /menu/:tenantSlug/:categorySlug/:itemSlug` → Item details
+- Added `slug` column to Category and MenuItem entities
+- Created migration for slug columns with Vietnamese accent removal
+- Updated seed data with slugs (pho, bun, com, pho-bo-tai, etc.)
+- Updated Postman collection with new URL patterns
+- Cleaned up deprecated getMenuItem method (replaced by getMenuItemBySlug)
+- Updated @localstore/contracts to v0.2.2
+
+**Next Steps:**
+
+- [ ] Push branch and create PR
+- [ ] Merge to main
+- [ ] Create tag v1.1.0
+- [ ] Post release to Slack #agent-events
+
+### Session: 2025-12-12 (SEO-friendly URL Structure)
+
+- Implemented full SEO-friendly URL structure:
+  - `GET /menu/:tenantSlug` → Full menu
+  - `GET /menu/:tenantSlug/categories` → Categories list
+  - `GET /menu/:tenantSlug/:categorySlug` → Items in category
+  - `GET /menu/:tenantSlug/:categorySlug/:itemSlug` → Item details
+- Added `slug` column to Category and MenuItem entities
+- Created migration for slug columns with Vietnamese accent removal
+- Updated seed data with slugs (pho, bun, com, pho-bo-tai, etc.)
+- Updated Postman collection with new URL patterns
+- Cleaned up deprecated getMenuItem method (replaced by getMenuItemBySlug)
+
+### Session: 2025-12-11 (v1.3-specs Sync + Contracts Update)
+
+- Synced events from #agent-events channel
 - Actions:
-  - Installed `@localstore/contracts@0.1.0` (ESM-only, blocked Jest)
-  - Posted BUILD_REQUEST to #agent-events for contracts repo
-  - contracts published v0.2.0 with dual CJS/ESM build
-  - Updated to `@localstore/contracts@0.2.0`
-  - Reverted jest.config.js to simple config (no longer needed ESM workarounds)
+  - Updated `@localstore/contracts` from v0.2.0 to v0.2.1 (currency format fix: `75.000đ`)
+  - Implemented v1.3-specs tenant slug routing (BREAKING CHANGE):
+    - Changed `/menu/:tenantId` → `/menu/:tenantSlug`
+    - Changed `/menu/:tenantId/categories` → `/menu/:tenantSlug/categories`
+    - Changed `/menu/:tenantId/items/:itemId` → `/menu/:tenantSlug/items/:itemId`
+  - Service now queries tenants by `slug` instead of `id`
+  - Updated all unit tests to use tenantSlug
+  - Updated Postman collection with tenantSlug variable
 - Completed:
-  - `ItemStatus` enum imported from contracts in entities
-  - DTO types re-exported from contracts in dto/index.ts
-  - All 14 tests passing
-- Next: Create PR for contracts integration
+  - All 15 tests passing
+  - Lint clean
+- Next: Create PR for v1.3-specs compliance
 
 ### Session: 2025-12-06 (Sprint 0.5)
 
@@ -86,9 +140,10 @@ All stories implemented. Ready for testing and PR.
 |--------|----------|-------------|
 | GET | `/api/v1/health` | Health check |
 | GET | `/api/v1/health/ready` | Readiness check |
-| GET | `/api/v1/menu/:tenantId` | Full menu with store info |
-| GET | `/api/v1/menu/:tenantId/categories` | Categories with items |
-| GET | `/api/v1/menu/:tenantId/items/:itemId` | Single item details |
+| GET | `/api/v1/menu/:tenantSlug` | Full menu with store info |
+| GET | `/api/v1/menu/:tenantSlug/categories` | Categories with items |
+| GET | `/api/v1/menu/:tenantSlug/:categorySlug` | Items in a category |
+| GET | `/api/v1/menu/:tenantSlug/:categorySlug/:itemSlug` | Single item details |
 
 ### Files Created
 
@@ -169,9 +224,15 @@ pnpm run build            # Build for production
 # Health check
 curl http://localhost:8080/api/v1/health
 
-# Get menu
-curl http://localhost:8080/api/v1/menu/550e8400-e29b-41d4-a716-446655440000
+# Get full menu
+curl http://localhost:8080/api/v1/menu/pho-hanoi-24
 
 # Get categories
-curl http://localhost:8080/api/v1/menu/550e8400-e29b-41d4-a716-446655440000/categories
+curl http://localhost:8080/api/v1/menu/pho-hanoi-24/categories
+
+# Get items in a category
+curl http://localhost:8080/api/v1/menu/pho-hanoi-24/pho
+
+# Get specific item
+curl http://localhost:8080/api/v1/menu/pho-hanoi-24/pho/pho-bo-tai
 ```

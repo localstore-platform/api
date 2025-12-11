@@ -29,6 +29,7 @@ export { ItemStatus };
 @Index('idx_menu_items_featured', ['tenantId'], {
   where: 'is_featured = true AND deleted_at IS NULL',
 })
+@Index('idx_menu_items_tenant_slug', ['tenantId', 'slug'], { where: 'deleted_at IS NULL' })
 export class MenuItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -56,6 +57,9 @@ export class MenuItem {
 
   @Column({ name: 'is_chain_wide', default: false })
   isChainWide: boolean;
+
+  @Column({ length: 100 })
+  slug: string;
 
   @Column({ name: 'name_vi', length: 255 })
   nameVi: string;
