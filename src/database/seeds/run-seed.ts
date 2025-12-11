@@ -29,8 +29,8 @@ async function runSeed() {
     // Insert sample tenant
     await dataSource.query(
       `
-      INSERT INTO tenants (id, business_name, slug, business_type, phone, address, city, province, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO tenants (id, business_name, slug, business_type, phone, address, city, province, status, logo_url, primary_color)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     `,
       [
         tenantId,
@@ -42,6 +42,8 @@ async function runSeed() {
         'Hồ Chí Minh',
         'Hồ Chí Minh',
         'active',
+        'https://cdn.localstore.vn/logos/pho-hanoi-24.png',
+        '#E53935',
       ],
     );
     console.log('✅ Created sample tenant: Phở Hà Nội 24');

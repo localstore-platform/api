@@ -65,6 +65,12 @@ export class Tenant {
   @Column({ name: 'currency_code', type: 'char', length: 3, default: 'VND' })
   currencyCode: string;
 
+  @Column({ name: 'logo_url', length: 500, nullable: true })
+  logoUrl: string;
+
+  @Column({ name: 'primary_color', type: 'char', length: 7, nullable: true })
+  primaryColor: string;
+
   @Column({ length: 20, default: 'active' })
   status: string;
 
