@@ -6,11 +6,9 @@ import {
   PublicMenuResponseDto,
   PublicMenuCategoriesResponseDto,
   PublicMenuCategoryDto,
+  PublicMenuCategoryWithoutItemsDto,
   PublicMenuItemDto,
   PublicMenuStoreInfoDto,
-  MenuItemVariantDto,
-  MenuItemAddOnDto,
-  MenuItemImageDto,
   CategoryItemsResponseDto,
   CategoryInfoDto,
 } from './dto';
@@ -62,13 +60,15 @@ export class MenuService {
     // Group items by category
     const categoriesWithItems = this.groupItemsByCategory(categories, menuItems);
 
+    // Calculate total items
+    const totalItems = menuItems.length;
+
     return {
       store: this.mapTenantToStoreInfo(tenant),
       categories: categoriesWithItems,
-      meta: {
-        timestamp: new Date().toISOString(),
-        tenantId,
-      },
+      totalItems,
+      currencyCode: tenant.currencyCode,
+      lastUpdatedAt: new Date().toISOString(),
     };
   }
 
@@ -98,25 +98,20 @@ export class MenuService {
       order: { displayOrder: 'ASC' },
     });
 
-    // Fetch published menu items for counting
-    const menuItems = await this.menuItemRepository.find({
-      where: { tenantId, status: ItemStatus.PUBLISHED },
-      relations: ['variants', 'addOns', 'images', 'category'],
-      order: { displayOrder: 'ASC' },
-    });
-
-    // Group items by category
-    const categoriesWithItems = this.groupItemsByCategory(categories, menuItems);
-    const totalItems = menuItems.length;
+    // Map categories to DTO without items (per contracts)
+    const categoriesWithoutItems: PublicMenuCategoryWithoutItemsDto[] = categories.map(
+      (category) => ({
+        id: category.id,
+        name: category.nameVi,
+        nameEn: category.nameEn || undefined,
+        description: category.descriptionVi || undefined,
+        displayOrder: category.displayOrder,
+      }),
+    );
 
     return {
-      categories: categoriesWithItems,
-      meta: {
-        timestamp: new Date().toISOString(),
-        tenantId,
-        totalCategories: categories.length,
-        totalItems,
-      },
+      store: this.mapTenantToStoreInfo(tenant),
+      categories: categoriesWithoutItems,
     };
   }
 
@@ -232,15 +227,14 @@ export class MenuService {
 
   /**
    * Map Category entity to CategoryInfoDto (without items)
+   * Matches Omit<MenuCategoryDto, 'items'> from @localstore/contracts
    */
   private mapCategoryToInfo(category: Category): CategoryInfoDto {
     return {
       id: category.id,
-      slug: category.slug,
       name: category.nameVi,
       nameEn: category.nameEn || undefined,
       description: category.descriptionVi || undefined,
-      descriptionEn: category.descriptionEn || undefined,
       displayOrder: category.displayOrder,
     };
   }
@@ -269,101 +263,39 @@ export class MenuService {
 
   /**
    * Map Tenant entity to PublicMenuStoreInfoDto
+   * Follows MenuStoreInfoDto from @localstore/contracts v0.3.0
    */
   private mapTenantToStoreInfo(tenant: Tenant): PublicMenuStoreInfoDto {
     return {
       id: tenant.id,
-      businessName: tenant.businessName,
-      businessType: tenant.businessType || undefined,
-      address: tenant.address || undefined,
-      phone: tenant.phone || undefined,
-      locale: tenant.locale,
-      currency: tenant.currencyCode,
+      name: tenant.businessName,
+      slug: tenant.slug,
+      logoUrl: tenant.logoUrl || null,
+      primaryColor: tenant.primaryColor || null,
+      businessType: tenant.businessType || null,
     };
   }
 
   /**
    * Map MenuItem entity to PublicMenuItemDto
+   * Follows MenuItemDto from @localstore/contracts v0.3.0
    */
   private mapMenuItemToDto(item: MenuItem): PublicMenuItemDto {
     return {
       id: item.id,
       name: item.nameVi,
-      nameEn: item.nameEn || undefined,
-      description: item.descriptionVi || undefined,
-      descriptionEn: item.descriptionEn || undefined,
+      nameEn: item.nameEn || null,
+      description: item.descriptionVi || null,
       price: Number(item.basePrice),
-      compareAtPrice: item.compareAtPrice ? Number(item.compareAtPrice) : undefined,
-      currency: item.currencyCode,
-      thumbnailUrl: item.thumbnailUrl || undefined,
+      compareAtPrice: item.compareAtPrice ? Number(item.compareAtPrice) : null,
+      currencyCode: item.currencyCode,
+      imageUrl: item.thumbnailUrl || null,
+      available: item.status === ItemStatus.PUBLISHED,
       isFeatured: item.isFeatured,
       isSpicy: item.isSpicy,
       isVegetarian: item.isVegetarian,
       isVegan: item.isVegan,
-      isAvailable: item.status === ItemStatus.PUBLISHED,
-      variants: this.mapVariants(item.variants || []),
-      addOns: this.mapAddOns(item.addOns || []),
-      images: this.mapImages(item.images || []),
+      displayOrder: item.displayOrder,
     };
-  }
-
-  /**
-   * Map item variants to DTO
-   */
-  private mapVariants(variants: MenuItem['variants']): MenuItemVariantDto[] {
-    if (!variants) return [];
-
-    return variants
-      .filter((v) => v.isAvailable)
-      .sort((a, b) => a.displayOrder - b.displayOrder)
-      .map((variant) => ({
-        id: variant.id,
-        name: variant.nameVi,
-        nameEn: variant.nameEn || undefined,
-        priceAdjustment: Number(variant.priceAdjustment),
-        isAvailable: variant.isAvailable,
-      }));
-  }
-
-  /**
-   * Map item add-ons to DTO
-   */
-  private mapAddOns(addOns: MenuItem['addOns']): MenuItemAddOnDto[] {
-    if (!addOns) return [];
-
-    return addOns
-      .filter((a) => a.isAvailable)
-      .sort((a, b) => a.displayOrder - b.displayOrder)
-      .map((addOn) => ({
-        id: addOn.id,
-        name: addOn.nameVi,
-        nameEn: addOn.nameEn || undefined,
-        price: Number(addOn.price),
-        isRequired: addOn.isRequired,
-        maxSelections: addOn.maxSelections,
-        isAvailable: addOn.isAvailable,
-      }));
-  }
-
-  /**
-   * Map item images to DTO
-   */
-  private mapImages(images: MenuItem['images']): MenuItemImageDto[] {
-    if (!images) return [];
-
-    return images
-      .sort((a, b) => {
-        // Primary images first, then by display order
-        if (a.isPrimary && !b.isPrimary) return -1;
-        if (!a.isPrimary && b.isPrimary) return 1;
-        return a.displayOrder - b.displayOrder;
-      })
-      .map((image) => ({
-        id: image.id,
-        url: image.originalUrl,
-        thumbnailUrl: image.thumbnailUrl || undefined,
-        altText: image.altTextVi || undefined,
-        isPrimary: image.isPrimary,
-      }));
   }
 }

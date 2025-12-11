@@ -21,6 +21,8 @@ describe('MenuService', () => {
     phone: '+84912345678',
     locale: 'vi-VN',
     currencyCode: 'VND',
+    logoUrl: 'https://cdn.localstore.vn/logos/pho-hanoi-24.png',
+    primaryColor: '#E53935',
     status: 'active',
   };
 
@@ -118,8 +120,13 @@ describe('MenuService', () => {
 
       expect(result).toHaveProperty('store');
       expect(result).toHaveProperty('categories');
-      expect(result).toHaveProperty('meta');
-      expect(result.store.businessName).toBe('Phở Hà Nội 24');
+      expect(result).toHaveProperty('totalItems');
+      expect(result).toHaveProperty('currencyCode', 'VND');
+      expect(result).toHaveProperty('lastUpdatedAt');
+      expect(result.store.name).toBe('Phở Hà Nội 24');
+      expect(result.store.slug).toBe('pho-hanoi-24');
+      expect(result.store.logoUrl).toBe('https://cdn.localstore.vn/logos/pho-hanoi-24.png');
+      expect(result.store.primaryColor).toBe('#E53935');
       expect(result.categories).toHaveLength(1);
       expect(result.categories[0].name).toBe('Phở');
     });
@@ -139,10 +146,11 @@ describe('MenuService', () => {
 
       const result = await service.getCategories(mockTenantSlug);
 
+      expect(result).toHaveProperty('store');
       expect(result).toHaveProperty('categories');
-      expect(result).toHaveProperty('meta');
-      expect(result.meta.totalCategories).toBe(1);
-      expect(result.meta.totalItems).toBe(1);
+      expect(result.store.name).toBe('Phở Hà Nội 24');
+      expect(result.categories).toHaveLength(1);
+      expect(result.categories[0].name).toBe('Phở');
     });
   });
 
@@ -220,10 +228,13 @@ describe('MenuService', () => {
       expect(result).toHaveProperty('category');
       expect(result).toHaveProperty('items');
       expect(result).toHaveProperty('totalItems', 1);
-      expect(result.store.businessName).toBe('Phở Hà Nội 24');
+      expect(result.store.name).toBe('Phở Hà Nội 24');
+      expect(result.store.slug).toBe('pho-hanoi-24');
       expect(result.category.name).toBe('Phở');
       expect(result.items).toHaveLength(1);
       expect(result.items[0].name).toBe('Phở Bò Tái');
+      expect(result.items[0].currencyCode).toBe('VND');
+      expect(result.items[0].available).toBe(true);
     });
   });
 });
