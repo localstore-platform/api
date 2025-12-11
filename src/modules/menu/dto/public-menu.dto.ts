@@ -76,7 +76,7 @@ export class MenuItemImageDto {
 
 /**
  * DTO for individual menu item in public menu response
- * Implements MenuItemDto from @localstore/contracts with additional fields
+ * Implements MenuItemDto from @localstore/contracts v0.3.0
  * @see MenuItemDto in @localstore/contracts
  */
 export class PublicMenuItemDto {
@@ -87,49 +87,43 @@ export class PublicMenuItemDto {
   name: string;
 
   @ApiPropertyOptional({ example: 'Rare Beef Pho' })
-  nameEn?: string;
+  nameEn?: string | null;
 
   @ApiPropertyOptional({ example: 'Phở bò tái mềm, nước dùng thanh ngọt' })
-  description?: string;
+  description?: string | null;
 
-  @ApiPropertyOptional({ example: 'Soft rare beef pho with light sweet broth' })
-  descriptionEn?: string;
-
-  @ApiProperty({ example: 75000, description: 'Base price in VND (integer)' })
+  @ApiProperty({ example: 75000, description: 'Price in VND (integer)' })
   price: number;
 
-  @ApiPropertyOptional({ example: 85000, description: 'Original price before discount' })
-  compareAtPrice?: number;
+  @ApiPropertyOptional({ example: 85000, description: 'Original price for showing discounts' })
+  compareAtPrice?: number | null;
 
-  @ApiProperty({ example: 'VND' })
-  currency: string;
+  @ApiProperty({ example: 'VND', description: 'Currency code' })
+  currencyCode: string;
 
-  @ApiPropertyOptional({ example: 'https://cdn.localstore.vn/images/pho-bo-thumb.jpg' })
-  thumbnailUrl?: string;
+  @ApiPropertyOptional({
+    example: 'https://cdn.localstore.vn/images/pho-bo-thumb.jpg',
+    description: 'Main image URL',
+  })
+  imageUrl?: string | null;
 
-  @ApiProperty({ example: false })
-  isFeatured: boolean;
+  @ApiProperty({ example: true, description: 'Whether item is currently available' })
+  available: boolean;
 
-  @ApiProperty({ example: false })
-  isSpicy: boolean;
+  @ApiPropertyOptional({ example: false, description: 'Featured item flag' })
+  isFeatured?: boolean;
 
-  @ApiProperty({ example: false })
-  isVegetarian: boolean;
+  @ApiPropertyOptional({ example: false, description: 'Spicy indicator' })
+  isSpicy?: boolean;
 
-  @ApiProperty({ example: false })
-  isVegan: boolean;
+  @ApiPropertyOptional({ example: false, description: 'Vegetarian indicator' })
+  isVegetarian?: boolean;
 
-  @ApiProperty({ example: true })
-  isAvailable: boolean;
+  @ApiPropertyOptional({ example: false, description: 'Vegan indicator' })
+  isVegan?: boolean;
 
-  @ApiProperty({ type: [MenuItemVariantDto] })
-  variants: MenuItemVariantDto[];
-
-  @ApiProperty({ type: [MenuItemAddOnDto] })
-  addOns: MenuItemAddOnDto[];
-
-  @ApiProperty({ type: [MenuItemImageDto] })
-  images: MenuItemImageDto[];
+  @ApiProperty({ example: 1, description: 'Display order within category' })
+  displayOrder: number;
 }
 
 /**
@@ -163,35 +157,32 @@ export class PublicMenuCategoryDto {
 /**
  * DTO for tenant/store information in public menu response
  * Implements MenuStoreInfoDto from @localstore/contracts
- * @see MenuStoreInfoDto in @localstore/contracts
+ * @see MenuStoreInfoDto in @localstore/contracts v0.3.0
  */
 export class PublicMenuStoreInfoDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   id: string;
 
-  @ApiProperty({ example: 'Phở Hà Nội 24' })
-  businessName: string;
+  @ApiProperty({ example: 'Phở Hà Nội 24', description: 'Store/business name' })
+  name: string;
+
+  @ApiProperty({ example: 'pho-hanoi-24', description: 'URL-friendly slug' })
+  slug: string;
+
+  @ApiPropertyOptional({ example: 'https://cdn.localstore.vn/logos/pho-hanoi-24.png' })
+  logoUrl?: string | null;
+
+  @ApiPropertyOptional({ example: '#E53935', description: 'Primary brand color (hex)' })
+  primaryColor?: string | null;
 
   @ApiPropertyOptional({ example: 'restaurant' })
-  businessType?: string;
-
-  @ApiPropertyOptional({ example: '123 Nguyễn Huệ, Q1, HCMC' })
-  address?: string;
-
-  @ApiPropertyOptional({ example: '+84912345678' })
-  phone?: string;
-
-  @ApiProperty({ example: 'vi-VN' })
-  locale: string;
-
-  @ApiProperty({ example: 'VND' })
-  currency: string;
+  businessType?: string | null;
 }
 
 /**
  * Main DTO for public menu response
- * GET /api/v1/menu/:tenantId
- * Implements PublicMenuResponse from @localstore/contracts
+ * GET /api/v1/menu/:tenantSlug
+ * Implements PublicMenuResponse from @localstore/contracts v0.3.0
  * @see PublicMenuResponse in @localstore/contracts
  */
 export class PublicMenuResponseDto {
@@ -201,56 +192,24 @@ export class PublicMenuResponseDto {
   @ApiProperty({ type: [PublicMenuCategoryDto] })
   categories: PublicMenuCategoryDto[];
 
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      timestamp: { type: 'string', example: '2025-12-06T12:00:00.000Z' },
-      tenantId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
-    },
-  })
-  meta: {
-    timestamp: string;
-    tenantId: string;
-  };
+  @ApiProperty({ example: 13, description: 'Total number of items across all categories' })
+  totalItems: number;
+
+  @ApiProperty({ example: 'VND', description: 'Currency code used for prices' })
+  currencyCode: string;
+
+  @ApiProperty({ example: '2025-12-06T12:00:00.000Z', description: 'Last updated timestamp' })
+  lastUpdatedAt: string;
 }
 
 /**
- * DTO for categories-only response
- * GET /api/v1/menu/:tenantSlug/categories
- * Implements MenuCategoriesResponse from @localstore/contracts
- * @see MenuCategoriesResponse in @localstore/contracts
+ * DTO for category without items
+ * Used in MenuCategoriesResponse
+ * @see MenuCategoriesResponse in @localstore/contracts v0.3.0
  */
-export class PublicMenuCategoriesResponseDto {
-  @ApiProperty({ type: [PublicMenuCategoryDto] })
-  categories: PublicMenuCategoryDto[];
-
-  @ApiProperty({
-    type: 'object',
-    properties: {
-      timestamp: { type: 'string', example: '2025-12-06T12:00:00.000Z' },
-      tenantId: { type: 'string', example: '550e8400-e29b-41d4-a716-446655440000' },
-      totalCategories: { type: 'number', example: 5 },
-      totalItems: { type: 'number', example: 25 },
-    },
-  })
-  meta: {
-    timestamp: string;
-    tenantId: string;
-    totalCategories: number;
-    totalItems: number;
-  };
-}
-
-/**
- * DTO for category info without items
- * Used in CategoryItemsResponseDto
- */
-export class CategoryInfoDto {
+export class PublicMenuCategoryWithoutItemsDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
   id: string;
-
-  @ApiProperty({ example: 'pho', description: 'URL-friendly slug' })
-  slug: string;
 
   @ApiProperty({ example: 'Phở' })
   name: string;
@@ -261,8 +220,41 @@ export class CategoryInfoDto {
   @ApiPropertyOptional({ example: 'Các món phở truyền thống Việt Nam' })
   description?: string;
 
-  @ApiPropertyOptional({ example: 'Traditional Vietnamese pho dishes' })
-  descriptionEn?: string;
+  @ApiProperty({ example: 1 })
+  displayOrder: number;
+}
+
+/**
+ * DTO for categories-only response
+ * GET /api/v1/menu/:tenantSlug/categories
+ * Implements MenuCategoriesResponse from @localstore/contracts v0.3.0
+ * @see MenuCategoriesResponse in @localstore/contracts
+ */
+export class PublicMenuCategoriesResponseDto {
+  @ApiProperty({ type: PublicMenuStoreInfoDto })
+  store: PublicMenuStoreInfoDto;
+
+  @ApiProperty({ type: [PublicMenuCategoryWithoutItemsDto] })
+  categories: PublicMenuCategoryWithoutItemsDto[];
+}
+
+/**
+ * DTO for category info without items
+ * Used in CategoryItemsResponseDto
+ * Matches Omit<MenuCategoryDto, 'items'> from @localstore/contracts
+ */
+export class CategoryInfoDto {
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
+  id: string;
+
+  @ApiProperty({ example: 'Phở' })
+  name: string;
+
+  @ApiPropertyOptional({ example: 'Pho' })
+  nameEn?: string;
+
+  @ApiPropertyOptional({ example: 'Các món phở truyền thống Việt Nam' })
+  description?: string;
 
   @ApiProperty({ example: 1 })
   displayOrder: number;
