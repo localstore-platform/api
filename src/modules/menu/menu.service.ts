@@ -11,6 +11,8 @@ import {
   PublicMenuStoreInfoDto,
   CategoryItemsResponseDto,
   CategoryInfoDto,
+  MenuItemDetailResponseDto,
+  MenuItemDetailDto,
 } from './dto';
 
 @Injectable()
@@ -119,12 +121,13 @@ export class MenuService {
   /**
    * Get a single menu item by slug (SEO-friendly)
    * GET /api/v1/menu/:tenantSlug/:categorySlug/:itemSlug
+   * Returns wrapped response per MenuItemDetailResponse from contracts v0.3.1
    */
   async getMenuItemBySlug(
     tenantSlug: string,
     categorySlug: string,
     itemSlug: string,
-  ): Promise<PublicMenuItemDto> {
+  ): Promise<MenuItemDetailResponseDto> {
     // Verify tenant exists by slug
     const tenant = await this.tenantRepository.findOne({
       where: { slug: tenantSlug, status: 'active' },
@@ -170,7 +173,13 @@ export class MenuService {
       });
     }
 
-    return this.mapMenuItemToDto(item);
+    return {
+      item: this.mapMenuItemToDetailDto(item),
+      category: {
+        id: category.id,
+        name: category.nameVi,
+      },
+    };
   }
 
   /**
@@ -300,6 +309,51 @@ export class MenuService {
       isVegetarian: item.isVegetarian,
       isVegan: item.isVegan,
       displayOrder: item.displayOrder,
+    };
+  }
+
+  /**
+   * Map MenuItem entity to MenuItemDetailDto (extended with descriptionFull, images, variants, addOns)
+   * Follows MenuItemDetailResponse.item from @localstore/contracts v0.3.1
+   */
+  private mapMenuItemToDetailDto(item: MenuItem): MenuItemDetailDto {
+    return {
+      // Base MenuItemDto fields
+      id: item.id,
+      slug: item.slug,
+      name: item.nameVi,
+      nameEn: item.nameEn || null,
+      description: item.descriptionVi || null,
+      price: Number(item.basePrice),
+      compareAtPrice: item.compareAtPrice ? Number(item.compareAtPrice) : null,
+      currencyCode: item.currencyCode,
+      imageUrl: item.thumbnailUrl || null,
+      available: item.status === ItemStatus.PUBLISHED,
+      isFeatured: item.isFeatured,
+      isSpicy: item.isSpicy,
+      isVegetarian: item.isVegetarian,
+      isVegan: item.isVegan,
+      displayOrder: item.displayOrder,
+      // Extended fields for detail view
+      descriptionFull: item.descriptionVi || null,
+      images: item.images?.map((img) => ({
+        url: img.originalUrl,
+        alt: img.altTextVi || null,
+        isPrimary: img.isPrimary,
+      })),
+      variants: item.variants?.map((v) => ({
+        id: v.id,
+        name: v.nameVi,
+        priceAdjustment: Number(v.priceAdjustment),
+        available: v.isAvailable,
+      })),
+      addOns: item.addOns?.map((a) => ({
+        id: a.id,
+        name: a.nameVi,
+        price: Number(a.price),
+        isRequired: a.isRequired,
+        available: a.isAvailable,
+      })),
     };
   }
 }

@@ -15,7 +15,7 @@ describe('MenuController', () => {
     id: mockTenantId,
     name: 'Phở Hà Nội 24',
     slug: mockTenantSlug,
-    logoUrl: 'https://cdn.localstore.vn/logos/pho-hanoi-24.png',
+    logoUrl: 'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=200&h=200&fit=crop',
     primaryColor: '#E53935',
     businessType: 'restaurant',
   };

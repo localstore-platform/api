@@ -4,7 +4,7 @@ import { MenuService } from './menu.service';
 import {
   PublicMenuResponseDto,
   PublicMenuCategoriesResponseDto,
-  PublicMenuItemDto,
+  MenuItemDetailResponseDto,
   ErrorResponseDto,
   CategoryItemsResponseDto,
 } from './dto';
@@ -160,7 +160,7 @@ export class MenuController {
   @ApiResponse({
     status: 200,
     description: 'Thông tin sản phẩm',
-    type: PublicMenuItemDto,
+    type: MenuItemDetailResponseDto,
   })
   @ApiResponse({
     status: 404,
@@ -171,7 +171,7 @@ export class MenuController {
     @Param('tenantSlug') tenantSlug: string,
     @Param('categorySlug') categorySlug: string,
     @Param('itemSlug') itemSlug: string,
-  ): Promise<PublicMenuItemDto> {
+  ): Promise<MenuItemDetailResponseDto> {
     return this.menuService.getMenuItemBySlug(tenantSlug, categorySlug, itemSlug);
   }
 }
