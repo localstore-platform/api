@@ -1,7 +1,8 @@
 # Current Work – API Repository
 
-> **Last Updated:** 2025-12-11  
-> **Current Sprint:** Sprint 0.5 (Menu Demo)  
+> **Last Updated:** 2025-12-12  
+> **Current Sprint:** Sprint 0.5 (Menu Demo) - **COMPLETE**  
+> **Current Version:** v1.1.0  
 > **Sprint Spec:** [planning/sprint-0.5-menu-demo.md](https://github.com/localstore-platform/specs/blob/master/planning/sprint-0.5-menu-demo.md)
 
 ---
@@ -39,13 +40,50 @@
 
 ## Current Focus
 
-**✅ Sprint 0.5 Complete + v1.3-specs Updates Applied!**
+**✅ v1.1.0 Released!**
 
-All stories implemented. Tenant slug routing updated per v1.3-specs.
+Sprint 0.5 complete with SEO-friendly URL routing. Ready for next sprint.
 
 ---
 
 ## Session Notes
+
+### Session: 2025-12-12 (v1.1.0 Release)
+
+**Release Summary:**
+
+- **Version:** 1.1.0
+- **Branch:** feat/v1.3-tenant-slug-routing
+- **Tests:** 20 unit tests + 30 API assertions passing
+
+**Commits:**
+
+1. `feat: add SEO-friendly slug routing for categories and items`
+2. `feat: add slugs to seed data for Vietnamese menu items`
+3. `test: update unit tests for SEO-friendly slug routing`
+4. `docs: update documentation and Postman collection for v1.1.0`
+5. `chore: bump version to 1.1.0, update contracts to v0.2.2`
+
+**Changes:**
+
+- Implemented full SEO-friendly URL structure:
+  - `GET /menu/:tenantSlug` → Full menu
+  - `GET /menu/:tenantSlug/categories` → Categories list
+  - `GET /menu/:tenantSlug/:categorySlug` → Items in category
+  - `GET /menu/:tenantSlug/:categorySlug/:itemSlug` → Item details
+- Added `slug` column to Category and MenuItem entities
+- Created migration for slug columns with Vietnamese accent removal
+- Updated seed data with slugs (pho, bun, com, pho-bo-tai, etc.)
+- Updated Postman collection with new URL patterns
+- Cleaned up deprecated getMenuItem method (replaced by getMenuItemBySlug)
+- Updated @localstore/contracts to v0.2.2
+
+**Next Steps:**
+
+- [ ] Push branch and create PR
+- [ ] Merge to main
+- [ ] Create tag v1.1.0
+- [ ] Post release to Slack #agent-events
 
 ### Session: 2025-12-12 (SEO-friendly URL Structure)
 
