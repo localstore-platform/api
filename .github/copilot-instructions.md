@@ -284,6 +284,31 @@ After committing:
 
 ---
 
+## 📦 DTO Coordination with Contracts
+
+**CRITICAL:** When implementing features that require **new DTOs**:
+
+1. **Do NOT create new DTOs locally** without coordinating with contracts
+2. **Post a message to `#agent-events`** (channel ID: `C0A1VSFQ9SS`) requesting the DTO:
+
+```
+📋 DTO_REQUEST from api: [DTO Name]
+---
+Details: [Description of the DTO structure needed]
+Endpoint: [The API endpoint that will use this DTO]
+Fields: [List of fields with types]
+Affected: contracts
+Action: Create new DTO in @localstore/contracts
+```
+
+3. **Wait for contracts to publish** a new version with the DTO
+4. **Update @localstore/contracts** dependency to the new version
+5. **Import and use the DTO** from contracts
+
+This ensures type synchronization across all services (api, menu, mobile, dashboard).
+
+---
+
 ## Related Documentation
 
 - [API Specification](https://github.com/localstore-platform/specs/blob/v1.1-specs/architecture/api-specification.md)

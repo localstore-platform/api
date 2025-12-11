@@ -2,7 +2,7 @@
   "info": {
     "name": "LocalStore API",
     "_postman_id": "localstore-api-collection",
-    "description": "LocalStore Platform API - Vietnamese-first multi-tenant SaaS backend\n\nBase URL: http://localhost:8080/api/v1",
+    "description": "LocalStore Platform API - Vietnamese-first multi-tenant SaaS backend\n\nBase URL: http://localhost:8080/api/v1\n\nSEO-friendly URL structure:\n- GET /menu/:tenantSlug - Full menu\n- GET /menu/:tenantSlug/categories - Categories list\n- GET /menu/:tenantSlug/:categorySlug - Items in category\n- GET /menu/:tenantSlug/:categorySlug/:itemSlug - Item details\n\nExamples:\n- /menu/pho-hanoi-24/pho - All phở items\n- /menu/pho-hanoi-24/pho/pho-bo-tai - Phở bò tái details",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -12,13 +12,18 @@
       "type": "string"
     },
     {
-      "key": "tenantId",
-      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "key": "tenantSlug",
+      "value": "pho-hanoi-24",
       "type": "string"
     },
     {
-      "key": "itemId",
-      "value": "550e8400-e29b-41d4-a716-446655440040",
+      "key": "categorySlug",
+      "value": "pho",
+      "type": "string"
+    },
+    {
+      "key": "itemSlug",
+      "value": "pho-bo-tai",
       "type": "string"
     }
   ],
@@ -168,11 +173,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/menu/{{tenantId}}",
+              "raw": "{{baseUrl}}/menu/{{tenantSlug}}",
               "host": ["{{baseUrl}}"],
-              "path": ["menu", "{{tenantId}}"]
+              "path": ["menu", "{{tenantSlug}}"]
             },
-            "description": "Get full public menu for a tenant including store info, categories, and items"
+            "description": "Get full public menu for a tenant using tenant slug (e.g., pho-hanoi-24) including store info, categories, and items"
           }
         },
         {
@@ -216,11 +221,64 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/menu/{{tenantId}}/categories",
+              "raw": "{{baseUrl}}/menu/{{tenantSlug}}/categories",
               "host": ["{{baseUrl}}"],
-              "path": ["menu", "{{tenantId}}", "categories"]
+              "path": ["menu", "{{tenantSlug}}", "categories"]
             },
-            "description": "Get categories list with items for a tenant"
+            "description": "Get categories list with items for a tenant using tenant slug"
+          }
+        },
+        {
+          "name": "Get Category Items",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has store info', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('store');",
+                  "    pm.expect(jsonData.store).to.have.property('businessName');",
+                  "});",
+                  "",
+                  "pm.test('Response has category info with slug', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('category');",
+                  "    pm.expect(jsonData.category).to.have.property('id');",
+                  "    pm.expect(jsonData.category).to.have.property('slug');",
+                  "    pm.expect(jsonData.category).to.have.property('name');",
+                  "});",
+                  "",
+                  "pm.test('Response has items array', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('items');",
+                  "    pm.expect(jsonData.items).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Response has totalItems count', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('totalItems');",
+                  "    pm.expect(jsonData.totalItems).to.be.a('number');",
+                  "    pm.expect(jsonData.totalItems).to.equal(jsonData.items.length);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{tenantSlug}}/{{categorySlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{tenantSlug}}", "{{categorySlug}}"]
+            },
+            "description": "Get all items in a specific category using SEO-friendly URL (e.g., /menu/pho-hanoi-24/pho)"
           }
         },
         {
@@ -275,11 +333,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/menu/{{tenantId}}/items/{{itemId}}",
+              "raw": "{{baseUrl}}/menu/{{tenantSlug}}/{{categorySlug}}/{{itemSlug}}",
               "host": ["{{baseUrl}}"],
-              "path": ["menu", "{{tenantId}}", "items", "{{itemId}}"]
+              "path": ["menu", "{{tenantSlug}}", "{{categorySlug}}", "{{itemSlug}}"]
             },
-            "description": "Get a single menu item with variants and add-ons"
+            "description": "Get a single menu item using SEO-friendly URL (e.g., /menu/pho-hanoi-24/pho/pho-bo-tai)"
           }
         },
         {
@@ -306,11 +364,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/menu/00000000-0000-0000-0000-000000000000",
+              "raw": "{{baseUrl}}/menu/invalid-tenant-slug",
               "host": ["{{baseUrl}}"],
-              "path": ["menu", "00000000-0000-0000-0000-000000000000"]
+              "path": ["menu", "invalid-tenant-slug"]
             },
-            "description": "Test 404 response for non-existent tenant"
+            "description": "Test 404 response for non-existent tenant slug"
           }
         },
         {
@@ -337,11 +395,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/menu/{{tenantId}}/items/00000000-0000-0000-0000-000000000000",
+              "raw": "{{baseUrl}}/menu/{{tenantSlug}}/{{categorySlug}}/invalid-item-slug",
               "host": ["{{baseUrl}}"],
-              "path": ["menu", "{{tenantId}}", "items", "00000000-0000-0000-0000-000000000000"]
+              "path": ["menu", "{{tenantSlug}}", "{{categorySlug}}", "invalid-item-slug"]
             },
-            "description": "Test 404 response for non-existent menu item"
+            "description": "Test 404 response for non-existent menu item slug"
           }
         }
       ]
