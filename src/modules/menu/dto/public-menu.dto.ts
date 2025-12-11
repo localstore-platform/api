@@ -83,6 +83,9 @@ export class PublicMenuItemDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440004' })
   id: string;
 
+  @ApiProperty({ example: 'pho-bo-tai', description: 'URL-friendly slug' })
+  slug: string;
+
   @ApiProperty({ example: 'Phở bò tái' })
   name: string;
 
@@ -134,6 +137,9 @@ export class PublicMenuItemDto {
 export class PublicMenuCategoryDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
   id: string;
+
+  @ApiProperty({ example: 'pho', description: 'URL-friendly slug' })
+  slug: string;
 
   @ApiProperty({ example: 'Phở' })
   name: string;
@@ -211,6 +217,9 @@ export class PublicMenuCategoryWithoutItemsDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
   id: string;
 
+  @ApiProperty({ example: 'pho', description: 'URL-friendly slug' })
+  slug: string;
+
   @ApiProperty({ example: 'Phở' })
   name: string;
 
@@ -246,6 +255,9 @@ export class PublicMenuCategoriesResponseDto {
 export class CategoryInfoDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
   id: string;
+
+  @ApiProperty({ example: 'pho', description: 'URL-friendly slug' })
+  slug: string;
 
   @ApiProperty({ example: 'Phở' })
   name: string;

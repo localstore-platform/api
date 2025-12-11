@@ -102,6 +102,7 @@ export class MenuService {
     const categoriesWithoutItems: PublicMenuCategoryWithoutItemsDto[] = categories.map(
       (category) => ({
         id: category.id,
+        slug: category.slug,
         name: category.nameVi,
         nameEn: category.nameEn || undefined,
         description: category.descriptionVi || undefined,
@@ -232,6 +233,7 @@ export class MenuService {
   private mapCategoryToInfo(category: Category): CategoryInfoDto {
     return {
       id: category.id,
+      slug: category.slug,
       name: category.nameVi,
       nameEn: category.nameEn || undefined,
       description: category.descriptionVi || undefined,
@@ -251,6 +253,7 @@ export class MenuService {
 
       return {
         id: category.id,
+        slug: category.slug,
         name: category.nameVi,
         nameEn: category.nameEn || undefined,
         description: category.descriptionVi || undefined,
@@ -283,6 +286,7 @@ export class MenuService {
   private mapMenuItemToDto(item: MenuItem): PublicMenuItemDto {
     return {
       id: item.id,
+      slug: item.slug,
       name: item.nameVi,
       nameEn: item.nameEn || null,
       description: item.descriptionVi || null,

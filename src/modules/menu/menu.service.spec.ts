@@ -129,6 +129,8 @@ describe('MenuService', () => {
       expect(result.store.primaryColor).toBe('#E53935');
       expect(result.categories).toHaveLength(1);
       expect(result.categories[0].name).toBe('Phở');
+      expect(result.categories[0].slug).toBe('pho');
+      expect(result.categories[0].items[0].slug).toBe('pho-bo-tai');
     });
   });
 
@@ -151,6 +153,7 @@ describe('MenuService', () => {
       expect(result.store.name).toBe('Phở Hà Nội 24');
       expect(result.categories).toHaveLength(1);
       expect(result.categories[0].name).toBe('Phở');
+      expect(result.categories[0].slug).toBe('pho');
     });
   });
 
@@ -194,6 +197,7 @@ describe('MenuService', () => {
       );
 
       expect(result).toHaveProperty('id', mockMenuItem.id);
+      expect(result).toHaveProperty('slug', 'pho-bo-tai');
       expect(result).toHaveProperty('name', 'Phở Bò Tái');
       expect(result).toHaveProperty('price', 75000);
     });
@@ -231,8 +235,10 @@ describe('MenuService', () => {
       expect(result.store.name).toBe('Phở Hà Nội 24');
       expect(result.store.slug).toBe('pho-hanoi-24');
       expect(result.category.name).toBe('Phở');
+      expect(result.category.slug).toBe('pho');
       expect(result.items).toHaveLength(1);
       expect(result.items[0].name).toBe('Phở Bò Tái');
+      expect(result.items[0].slug).toBe('pho-bo-tai');
       expect(result.items[0].currencyCode).toBe('VND');
       expect(result.items[0].available).toBe(true);
     });
