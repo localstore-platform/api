@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@localstore/contracts':
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.3.0
+        version: 0.3.0
       '@nestjs/common':
         specifier: ^11.1.9
         version: 11.1.9(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -662,8 +662,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@localstore/contracts@0.2.2':
-    resolution: {integrity: sha512-RRYIWCTgNyns5FggGuooaNEEOtDf460/84BdJIl7aI/9Ow/X2DLhR/Nnzca1snDVXcEJOqpLHGXxIV2z96+Bkg==}
+  '@localstore/contracts@0.3.0':
+    resolution: {integrity: sha512-KhyzvMunhIiyh0RryV5f0MAIC22iGISD9lPmMh5/CCVHfRP+aPVLCpfb51+3okwzljE7F5zZ+TmKYiMhBnVYNA==}
     engines: {node: '>=18.0.0'}
 
   '@lukeed/csprng@1.1.0':
@@ -4333,7 +4333,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@localstore/contracts@0.2.2': {}
+  '@localstore/contracts@0.3.0': {}
 
   '@lukeed/csprng@1.1.0': {}
 
