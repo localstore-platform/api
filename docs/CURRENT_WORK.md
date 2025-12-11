@@ -23,7 +23,7 @@
 
 | Task | Description | Status | Notes |
 |------|-------------|-----------|-------|
-| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.2.2 with CategoryItemsResponse |
+| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.3.0 with camelCase DTOs |
 | SEO-friendly URL Routing | Use slugs for tenant, category, and items | ✅ Done | /menu/:tenantSlug/:categorySlug/:itemSlug |
 
 ---
@@ -40,13 +40,32 @@
 
 ## Current Focus
 
-**✅ v1.1.0 Released!**
+**🟡 Contracts v0.3.0 Update:**
 
-Sprint 0.5 complete with SEO-friendly URL routing. Ready for next sprint.
+Updating @localstore/contracts to v0.3.0 (camelCase migration).
 
 ---
 
 ## Session Notes
+
+### Session: 2025-12-12 (Contracts v0.3.0 Update)
+
+**Event from Slack:**
+
+- `PACKAGE_RELEASED` from contracts: v0.3.0 - camelCase migration (BREAKING)
+- All DTOs now use camelCase instead of snake_case
+
+**Changes:**
+
+- Updated `@localstore/contracts` from v0.2.2 to v0.3.0
+- API already uses camelCase internally (NestJS convention)
+- No code changes required - tests pass
+
+**Tests:**
+
+- ✅ 20 unit tests passing
+- ✅ 30 API assertions passing
+- ✅ Lint clean
 
 ### Session: 2025-12-12 (v1.1.0 Release)
 
