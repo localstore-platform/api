@@ -13,57 +13,47 @@ describe('MenuController', () => {
 
   const mockStoreInfo = {
     id: mockTenantId,
-    businessName: 'Phở Hà Nội 24',
+    name: 'Phở Hà Nội 24',
+    slug: mockTenantSlug,
+    logoUrl: 'https://cdn.localstore.vn/logos/pho-hanoi-24.png',
+    primaryColor: '#E53935',
     businessType: 'restaurant',
-    address: '123 Nguyễn Huệ',
-    phone: '+84912345678',
-    locale: 'vi-VN',
-    currency: 'VND',
   };
 
   const mockPublicMenuResponse = {
     store: mockStoreInfo,
     categories: [],
-    meta: {
-      timestamp: new Date().toISOString(),
-      tenantId: mockTenantId,
-    },
+    totalItems: 0,
+    currencyCode: 'VND',
+    lastUpdatedAt: new Date().toISOString(),
   };
 
   const mockCategoriesResponse = {
+    store: mockStoreInfo,
     categories: [],
-    meta: {
-      timestamp: new Date().toISOString(),
-      tenantId: mockTenantId,
-      totalCategories: 0,
-      totalItems: 0,
-    },
   };
 
   const mockMenuItemResponse = {
     id: '550e8400-e29b-41d4-a716-446655440040',
-    slug: mockItemSlug,
     name: 'Phở Bò Tái',
     nameEn: 'Rare Beef Pho',
     description: 'Phở bò tái mềm',
-    descriptionEn: 'Rare beef pho',
     price: 75000,
-    currency: 'VND',
+    compareAtPrice: null,
+    currencyCode: 'VND',
+    imageUrl: null,
+    available: true,
     isFeatured: true,
     isSpicy: false,
     isVegetarian: false,
     isVegan: false,
-    isAvailable: true,
-    variants: [],
-    addOns: [],
-    images: [],
+    displayOrder: 1,
   };
 
   const mockCategoryItemsResponse = {
     store: mockStoreInfo,
     category: {
       id: '550e8400-e29b-41d4-a716-446655440030',
-      slug: mockCategorySlug,
       name: 'Phở',
       nameEn: 'Pho',
       description: 'Các món phở truyền thống Việt Nam',
