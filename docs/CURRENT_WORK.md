@@ -2,7 +2,7 @@
 
 > **Last Updated:** 2025-12-12  
 > **Current Sprint:** Sprint 0.5 (Menu Demo) - **COMPLETE**  
-> **Current Version:** v1.2.0  
+> **Current Version:** v1.2.1  
 > **Sprint Spec:** [planning/sprint-0.5-menu-demo.md](https://github.com/localstore-platform/specs/blob/master/planning/sprint-0.5-menu-demo.md)
 
 ---
@@ -23,8 +23,9 @@
 
 | Task | Description | Status | Notes |
 |------|-------------|-----------|-------|
-| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.3.0 with camelCase DTOs |
+| Contracts Integration | Import shared types from @localstore/contracts | ✅ Done | v0.3.1 with MenuItemDetailResponse |
 | SEO-friendly URL Routing | Use slugs for tenant, category, and items | ✅ Done | /menu/:tenantSlug/:categorySlug/:itemSlug |
+| Item Detail Response Wrapper | Wrap item detail per MenuItemDetailResponse | ✅ Done | PR #10 - item + category wrapper |
 
 ---
 
@@ -40,13 +41,54 @@
 
 ## Current Focus
 
-**✅ Contracts v0.3.0 Alignment Complete:**
+**✅ Contracts v0.3.1 Alignment Complete:**
 
-All API responses now match @localstore/contracts v0.3.0 exactly.
+All API responses now match @localstore/contracts v0.3.1 exactly, including MenuItemDetailResponse wrapper.
 
 ---
 
 ## Session Notes
+
+### Session: 2025-12-12 (MenuItemDetailResponse Fix - PR #10)
+
+**Issue from Slack:**
+
+- `ISSUE_CREATED` from menu: Item detail API response not wrapped per MenuItemDetailResponse
+- API returned item at root level
+- Contracts v0.3.1 expects `{ item: {...}, category: {...} }` wrapper
+
+**Changes:**
+
+1. **Created MenuItemDetailResponseDto matching contracts v0.3.1:**
+   - `MenuItemDetailResponseDto` with `item` + `category` wrapper
+   - `MenuItemDetailDto` extends `PublicMenuItemDto` with `descriptionFull`, `images`, `variants`, `addOns`
+   - `ItemDetailImageDto` (url, alt, isPrimary)
+   - `ItemDetailVariantDto` (id, name, priceAdjustment, available)
+   - `ItemDetailAddOnDto` (id, name, price, isRequired, available)
+   - `ItemDetailCategoryDto` (id, name)
+
+2. **Updated menu.service.ts:**
+   - Added `mapMenuItemToDetailDto()` method for extended item mapping
+   - `getMenuItemBySlug()` now returns wrapped response
+
+3. **Updated controller and tests:**
+   - Controller return type: `MenuItemDetailResponseDto`
+   - Unit tests verify wrapped response structure
+   - Postman tests updated for 32 assertions
+
+4. **Replaced placeholder CDN URLs:**
+   - Changed `cdn.localstore.vn` URLs to Unsplash free images
+   - Logo: Vietnamese restaurant image
+   - Items: Phở bowl images
+
+**Tests:**
+
+- ✅ 20 unit tests passing
+- ✅ Lint clean
+
+**PR:** <https://github.com/localstore-platform/api/pull/10>
+
+---
 
 ### Session: 2025-12-12 (Contracts v0.3.0 Response Format Fix)
 
