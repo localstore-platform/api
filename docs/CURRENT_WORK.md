@@ -2,7 +2,7 @@
 
 > **Last Updated:** 2025-12-12  
 > **Current Sprint:** Sprint 0.5 (Menu Demo) - **COMPLETE**  
-> **Current Version:** v1.1.0  
+> **Current Version:** v1.2.0  
 > **Sprint Spec:** [planning/sprint-0.5-menu-demo.md](https://github.com/localstore-platform/specs/blob/master/planning/sprint-0.5-menu-demo.md)
 
 ---
@@ -40,13 +40,52 @@
 
 ## Current Focus
 
-**🟡 Contracts v0.3.0 Update:**
+**✅ Contracts v0.3.0 Alignment Complete:**
 
-Updating @localstore/contracts to v0.3.0 (camelCase migration).
+All API responses now match @localstore/contracts v0.3.0 exactly.
 
 ---
 
 ## Session Notes
+
+### Session: 2025-12-12 (Contracts v0.3.0 Response Format Fix)
+
+**Issue from Slack:**
+
+- `ISSUE_CREATED` from menu: API store response doesn't match contracts
+- API returned `businessName`, `address`, `phone`, `locale`, `currency`
+- Contracts expect `name`, `slug`, `logoUrl`, `primaryColor`, `businessType`
+
+**Changes:**
+
+1. **Added branding fields to Tenant entity and database:**
+   - Migration: `1749808800000-AddTenantBrandingFields.ts`
+   - Added `logo_url` and `primary_color` columns to tenants table
+
+2. **Updated DTOs to match contracts v0.3.0:**
+   - `PublicMenuStoreInfoDto`: Now has `name`, `slug`, `logoUrl`, `primaryColor`, `businessType`
+   - `PublicMenuResponseDto`: Now has `totalItems`, `currencyCode`, `lastUpdatedAt` (removed `meta`)
+   - `PublicMenuCategoriesResponseDto`: Now has `store` and `categories` (removed `meta`)
+   - `PublicMenuItemDto`: Now has `currencyCode`, `imageUrl`, `available`, `displayOrder` (removed `variants`, `addOns`, `images`)
+   - `CategoryInfoDto`: Removed `slug` to match `Omit<MenuCategoryDto, 'items'>`
+
+3. **Updated menu.service.ts:**
+   - `mapTenantToStoreInfo()`: Returns contracts-aligned store info
+   - `mapMenuItemToDto()`: Returns contracts-aligned item (removed variants/addOns mapping)
+   - Removed unused helper methods (`mapVariants`, `mapAddOns`, `mapImages`)
+
+4. **Updated seed data:**
+   - Added `logo_url` and `primary_color` to sample tenant
+
+5. **Updated tests:**
+   - Unit tests: 20 passing
+   - API tests: 28 assertions passing
+
+**Tests:**
+
+- ✅ 20 unit tests passing
+- ✅ 28 API assertions passing
+- ✅ Lint clean
 
 ### Session: 2025-12-12 (Contracts v0.3.0 Update)
 
