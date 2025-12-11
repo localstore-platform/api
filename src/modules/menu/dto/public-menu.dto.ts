@@ -216,7 +216,7 @@ export class PublicMenuResponseDto {
 
 /**
  * DTO for categories-only response
- * GET /api/v1/menu/:tenantId/categories
+ * GET /api/v1/menu/:tenantSlug/categories
  * Implements MenuCategoriesResponse from @localstore/contracts
  * @see MenuCategoriesResponse in @localstore/contracts
  */
@@ -239,4 +239,51 @@ export class PublicMenuCategoriesResponseDto {
     totalCategories: number;
     totalItems: number;
   };
+}
+
+/**
+ * DTO for category info without items
+ * Used in CategoryItemsResponseDto
+ */
+export class CategoryInfoDto {
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
+  id: string;
+
+  @ApiProperty({ example: 'pho', description: 'URL-friendly slug' })
+  slug: string;
+
+  @ApiProperty({ example: 'Phở' })
+  name: string;
+
+  @ApiPropertyOptional({ example: 'Pho' })
+  nameEn?: string;
+
+  @ApiPropertyOptional({ example: 'Các món phở truyền thống Việt Nam' })
+  description?: string;
+
+  @ApiPropertyOptional({ example: 'Traditional Vietnamese pho dishes' })
+  descriptionEn?: string;
+
+  @ApiProperty({ example: 1 })
+  displayOrder: number;
+}
+
+/**
+ * DTO for category items response
+ * GET /api/v1/menu/:tenantSlug/categories/:categorySlug/items
+ * Implements CategoryItemsResponse from @localstore/contracts
+ * @see CategoryItemsResponse in @localstore/contracts
+ */
+export class CategoryItemsResponseDto {
+  @ApiProperty({ type: PublicMenuStoreInfoDto })
+  store: PublicMenuStoreInfoDto;
+
+  @ApiProperty({ type: CategoryInfoDto })
+  category: CategoryInfoDto;
+
+  @ApiProperty({ type: [PublicMenuItemDto] })
+  items: PublicMenuItemDto[];
+
+  @ApiProperty({ example: 5, description: 'Total number of items in this category' })
+  totalItems: number;
 }

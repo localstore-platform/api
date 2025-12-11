@@ -11,6 +11,8 @@ import {
   MenuItemVariantDto,
   MenuItemAddOnDto,
   MenuItemImageDto,
+  CategoryItemsResponseDto,
+  CategoryInfoDto,
 } from './dto';
 
 @Injectable()
@@ -26,21 +28,23 @@ export class MenuService {
 
   /**
    * Get public menu for a tenant
-   * GET /api/v1/menu/:tenantId
+   * GET /api/v1/menu/:tenantSlug
    */
-  async getPublicMenu(tenantId: string): Promise<PublicMenuResponseDto> {
-    // Fetch tenant
+  async getPublicMenu(tenantSlug: string): Promise<PublicMenuResponseDto> {
+    // Fetch tenant by slug
     const tenant = await this.tenantRepository.findOne({
-      where: { id: tenantId, status: 'active' },
+      where: { slug: tenantSlug, status: 'active' },
     });
 
     if (!tenant) {
       throw new NotFoundException({
         code: 'TENANT_NOT_FOUND',
         message: 'Không tìm thấy cửa hàng',
-        details: { tenantId },
+        details: { tenantSlug },
       });
     }
+
+    const tenantId = tenant.id;
 
     // Fetch categories with their items
     const categories = await this.categoryRepository.find({
@@ -70,21 +74,23 @@ export class MenuService {
 
   /**
    * Get categories list for a tenant
-   * GET /api/v1/menu/:tenantId/categories
+   * GET /api/v1/menu/:tenantSlug/categories
    */
-  async getCategories(tenantId: string): Promise<PublicMenuCategoriesResponseDto> {
-    // Verify tenant exists
+  async getCategories(tenantSlug: string): Promise<PublicMenuCategoriesResponseDto> {
+    // Verify tenant exists by slug
     const tenant = await this.tenantRepository.findOne({
-      where: { id: tenantId, status: 'active' },
+      where: { slug: tenantSlug, status: 'active' },
     });
 
     if (!tenant) {
       throw new NotFoundException({
         code: 'TENANT_NOT_FOUND',
         message: 'Không tìm thấy cửa hàng',
-        details: { tenantId },
+        details: { tenantSlug },
       });
     }
+
+    const tenantId = tenant.id;
 
     // Fetch categories
     const categories = await this.categoryRepository.find({
@@ -115,12 +121,48 @@ export class MenuService {
   }
 
   /**
-   * Get a single menu item by ID
-   * GET /api/v1/menu/:tenantId/items/:itemId
+   * Get a single menu item by slug (SEO-friendly)
+   * GET /api/v1/menu/:tenantSlug/:categorySlug/:itemSlug
    */
-  async getMenuItem(tenantId: string, itemId: string): Promise<PublicMenuItemDto> {
+  async getMenuItemBySlug(
+    tenantSlug: string,
+    categorySlug: string,
+    itemSlug: string,
+  ): Promise<PublicMenuItemDto> {
+    // Verify tenant exists by slug
+    const tenant = await this.tenantRepository.findOne({
+      where: { slug: tenantSlug, status: 'active' },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException({
+        code: 'TENANT_NOT_FOUND',
+        message: 'Không tìm thấy cửa hàng',
+        details: { tenantSlug },
+      });
+    }
+
+    // Verify category exists by slug
+    const category = await this.categoryRepository.findOne({
+      where: { slug: categorySlug, tenantId: tenant.id, isActive: true },
+    });
+
+    if (!category) {
+      throw new NotFoundException({
+        code: 'CATEGORY_NOT_FOUND',
+        message: 'Không tìm thấy danh mục',
+        details: { tenantSlug, categorySlug },
+      });
+    }
+
+    // Find item by slug within the category
     const item = await this.menuItemRepository.findOne({
-      where: { id: itemId, tenantId, status: ItemStatus.PUBLISHED },
+      where: {
+        slug: itemSlug,
+        tenantId: tenant.id,
+        categoryId: category.id,
+        status: ItemStatus.PUBLISHED,
+      },
       relations: ['variants', 'addOns', 'images'],
     });
 
@@ -128,11 +170,79 @@ export class MenuService {
       throw new NotFoundException({
         code: 'ITEM_NOT_FOUND',
         message: 'Không tìm thấy sản phẩm',
-        details: { tenantId, itemId },
+        details: { tenantSlug, categorySlug, itemSlug },
       });
     }
 
     return this.mapMenuItemToDto(item);
+  }
+
+  /**
+   * Get all items in a specific category
+   * GET /api/v1/menu/:tenantSlug/:categorySlug
+   */
+  async getCategoryItems(
+    tenantSlug: string,
+    categorySlug: string,
+  ): Promise<CategoryItemsResponseDto> {
+    // Verify tenant exists by slug
+    const tenant = await this.tenantRepository.findOne({
+      where: { slug: tenantSlug, status: 'active' },
+    });
+
+    if (!tenant) {
+      throw new NotFoundException({
+        code: 'TENANT_NOT_FOUND',
+        message: 'Không tìm thấy cửa hàng',
+        details: { tenantSlug },
+      });
+    }
+
+    // Verify category exists by slug and belongs to tenant
+    const category = await this.categoryRepository.findOne({
+      where: { slug: categorySlug, tenantId: tenant.id, isActive: true },
+    });
+
+    if (!category) {
+      throw new NotFoundException({
+        code: 'CATEGORY_NOT_FOUND',
+        message: 'Không tìm thấy danh mục',
+        details: { tenantSlug, categorySlug },
+      });
+    }
+
+    // Fetch published menu items for this category
+    const menuItems = await this.menuItemRepository.find({
+      where: {
+        tenantId: tenant.id,
+        categoryId: category.id,
+        status: ItemStatus.PUBLISHED,
+      },
+      relations: ['variants', 'addOns', 'images'],
+      order: { displayOrder: 'ASC' },
+    });
+
+    return {
+      store: this.mapTenantToStoreInfo(tenant),
+      category: this.mapCategoryToInfo(category),
+      items: menuItems.map((item) => this.mapMenuItemToDto(item)),
+      totalItems: menuItems.length,
+    };
+  }
+
+  /**
+   * Map Category entity to CategoryInfoDto (without items)
+   */
+  private mapCategoryToInfo(category: Category): CategoryInfoDto {
+    return {
+      id: category.id,
+      slug: category.slug,
+      name: category.nameVi,
+      nameEn: category.nameEn || undefined,
+      description: category.descriptionVi || undefined,
+      descriptionEn: category.descriptionEn || undefined,
+      displayOrder: category.displayOrder,
+    };
   }
 
   /**

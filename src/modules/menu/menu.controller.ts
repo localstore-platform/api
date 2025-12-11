@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import {
@@ -6,6 +6,7 @@ import {
   PublicMenuCategoriesResponseDto,
   PublicMenuItemDto,
   ErrorResponseDto,
+  CategoryItemsResponseDto,
 } from './dto';
 
 /**
@@ -14,9 +15,16 @@ import {
  * Provides public endpoints for viewing menu data.
  * These endpoints do NOT require authentication.
  *
- * Per Sprint 0.5 requirements:
- * - GET /api/v1/menu/:tenantId - Full menu with categories and items
- * - GET /api/v1/menu/:tenantId/categories - Categories list with items
+ * SEO-friendly URL structure:
+ * - GET /api/v1/menu/:tenantSlug - Full menu with categories and items
+ * - GET /api/v1/menu/:tenantSlug/categories - Categories list only
+ * - GET /api/v1/menu/:tenantSlug/:categorySlug - Items in a specific category
+ * - GET /api/v1/menu/:tenantSlug/:categorySlug/:itemSlug - Single item details
+ *
+ * Examples:
+ * - /api/v1/menu/pho-hanoi-24 → Full menu
+ * - /api/v1/menu/pho-hanoi-24/pho → All phở items
+ * - /api/v1/menu/pho-hanoi-24/pho/pho-tai-vien → Phở tái viên details
  */
 @ApiTags('menu')
 @Controller('menu')
@@ -27,18 +35,17 @@ export class MenuController {
    * Get public menu for a tenant
    * Returns full menu with store info, categories, and items
    */
-  @Get(':tenantId')
+  @Get(':tenantSlug')
   @ApiOperation({
     summary: 'Lấy thực đơn công khai của cửa hàng',
     description:
       'Trả về thực đơn đầy đủ với thông tin cửa hàng, danh mục và sản phẩm. Không yêu cầu xác thực.',
   })
   @ApiParam({
-    name: 'tenantId',
+    name: 'tenantSlug',
     type: 'string',
-    format: 'uuid',
-    description: 'ID của cửa hàng (tenant)',
-    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'Slug URL của cửa hàng (ví dụ: pho-hanoi-24)',
+    example: 'pho-hanoi-24',
   })
   @ApiResponse({
     status: 200,
@@ -50,27 +57,24 @@ export class MenuController {
     description: 'Không tìm thấy cửa hàng',
     type: ErrorResponseDto,
   })
-  async getPublicMenu(
-    @Param('tenantId', ParseUUIDPipe) tenantId: string,
-  ): Promise<PublicMenuResponseDto> {
-    return this.menuService.getPublicMenu(tenantId);
+  async getPublicMenu(@Param('tenantSlug') tenantSlug: string): Promise<PublicMenuResponseDto> {
+    return this.menuService.getPublicMenu(tenantSlug);
   }
 
   /**
    * Get categories list for a tenant
    * Returns all active categories with their items
    */
-  @Get(':tenantId/categories')
+  @Get(':tenantSlug/categories')
   @ApiOperation({
     summary: 'Lấy danh sách danh mục của cửa hàng',
     description: 'Trả về danh sách các danh mục với sản phẩm. Không yêu cầu xác thực.',
   })
   @ApiParam({
-    name: 'tenantId',
+    name: 'tenantSlug',
     type: 'string',
-    format: 'uuid',
-    description: 'ID của cửa hàng (tenant)',
-    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'Slug URL của cửa hàng (ví dụ: pho-hanoi-24)',
+    example: 'pho-hanoi-24',
   })
   @ApiResponse({
     status: 200,
@@ -83,33 +87,75 @@ export class MenuController {
     type: ErrorResponseDto,
   })
   async getCategories(
-    @Param('tenantId', ParseUUIDPipe) tenantId: string,
+    @Param('tenantSlug') tenantSlug: string,
   ): Promise<PublicMenuCategoriesResponseDto> {
-    return this.menuService.getCategories(tenantId);
+    return this.menuService.getCategories(tenantSlug);
   }
 
   /**
-   * Get a single menu item by ID
+   * Get all items in a specific category
+   * Returns items with store and category info
+   */
+  @Get(':tenantSlug/:categorySlug')
+  @ApiOperation({
+    summary: 'Lấy sản phẩm theo danh mục',
+    description: 'Trả về danh sách sản phẩm trong một danh mục cụ thể. Không yêu cầu xác thực.',
+  })
+  @ApiParam({
+    name: 'tenantSlug',
+    type: 'string',
+    description: 'Slug URL của cửa hàng (ví dụ: pho-hanoi-24)',
+    example: 'pho-hanoi-24',
+  })
+  @ApiParam({
+    name: 'categorySlug',
+    type: 'string',
+    description: 'Slug URL của danh mục (ví dụ: pho, bun, com)',
+    example: 'pho',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Danh sách sản phẩm trong danh mục',
+    type: CategoryItemsResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Không tìm thấy cửa hàng hoặc danh mục',
+    type: ErrorResponseDto,
+  })
+  async getCategoryItems(
+    @Param('tenantSlug') tenantSlug: string,
+    @Param('categorySlug') categorySlug: string,
+  ): Promise<CategoryItemsResponseDto> {
+    return this.menuService.getCategoryItems(tenantSlug, categorySlug);
+  }
+
+  /**
+   * Get a single menu item by slug
    * Returns detailed item information
    */
-  @Get(':tenantId/items/:itemId')
+  @Get(':tenantSlug/:categorySlug/:itemSlug')
   @ApiOperation({
     summary: 'Lấy thông tin chi tiết sản phẩm',
     description: 'Trả về thông tin chi tiết của một sản phẩm. Không yêu cầu xác thực.',
   })
   @ApiParam({
-    name: 'tenantId',
+    name: 'tenantSlug',
     type: 'string',
-    format: 'uuid',
-    description: 'ID của cửa hàng (tenant)',
-    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'Slug URL của cửa hàng (ví dụ: pho-hanoi-24)',
+    example: 'pho-hanoi-24',
   })
   @ApiParam({
-    name: 'itemId',
+    name: 'categorySlug',
     type: 'string',
-    format: 'uuid',
-    description: 'ID của sản phẩm',
-    example: '550e8400-e29b-41d4-a716-446655440001',
+    description: 'Slug URL của danh mục (ví dụ: pho)',
+    example: 'pho',
+  })
+  @ApiParam({
+    name: 'itemSlug',
+    type: 'string',
+    description: 'Slug URL của sản phẩm (ví dụ: pho-tai-vien)',
+    example: 'pho-tai-vien',
   })
   @ApiResponse({
     status: 200,
@@ -122,9 +168,10 @@ export class MenuController {
     type: ErrorResponseDto,
   })
   async getMenuItem(
-    @Param('tenantId', ParseUUIDPipe) tenantId: string,
-    @Param('itemId', ParseUUIDPipe) itemId: string,
+    @Param('tenantSlug') tenantSlug: string,
+    @Param('categorySlug') categorySlug: string,
+    @Param('itemSlug') itemSlug: string,
   ): Promise<PublicMenuItemDto> {
-    return this.menuService.getMenuItem(tenantId, itemId);
+    return this.menuService.getMenuItemBySlug(tenantSlug, categorySlug, itemSlug);
   }
 }
