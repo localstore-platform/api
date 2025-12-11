@@ -42,7 +42,7 @@ async function runSeed() {
         'Hồ Chí Minh',
         'Hồ Chí Minh',
         'active',
-        'https://cdn.localstore.vn/logos/pho-hanoi-24.png',
+        'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=200&h=200&fit=crop',
         '#E53935',
       ],
     );

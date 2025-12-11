@@ -21,7 +21,7 @@ describe('MenuService', () => {
     phone: '+84912345678',
     locale: 'vi-VN',
     currencyCode: 'VND',
-    logoUrl: 'https://cdn.localstore.vn/logos/pho-hanoi-24.png',
+    logoUrl: 'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=200&h=200&fit=crop',
     primaryColor: '#E53935',
     status: 'active',
   };
@@ -125,7 +125,9 @@ describe('MenuService', () => {
       expect(result).toHaveProperty('lastUpdatedAt');
       expect(result.store.name).toBe('Phở Hà Nội 24');
       expect(result.store.slug).toBe('pho-hanoi-24');
-      expect(result.store.logoUrl).toBe('https://cdn.localstore.vn/logos/pho-hanoi-24.png');
+      expect(result.store.logoUrl).toBe(
+        'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=200&h=200&fit=crop',
+      );
       expect(result.store.primaryColor).toBe('#E53935');
       expect(result.categories).toHaveLength(1);
       expect(result.categories[0].name).toBe('Phở');
@@ -185,7 +187,7 @@ describe('MenuService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should return menu item when found by slug', async () => {
+    it('should return wrapped menu item detail when found by slug', async () => {
       mockTenantRepository.findOne.mockResolvedValue(mockTenant);
       mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
       mockMenuItemRepository.findOne.mockResolvedValue(mockMenuItem);
@@ -196,10 +198,23 @@ describe('MenuService', () => {
         mockItemSlug,
       );
 
-      expect(result).toHaveProperty('id', mockMenuItem.id);
-      expect(result).toHaveProperty('slug', 'pho-bo-tai');
-      expect(result).toHaveProperty('name', 'Phở Bò Tái');
-      expect(result).toHaveProperty('price', 75000);
+      // MenuItemDetailResponse wrapper
+      expect(result).toHaveProperty('item');
+      expect(result).toHaveProperty('category');
+
+      // Item details
+      expect(result.item).toHaveProperty('id', mockMenuItem.id);
+      expect(result.item).toHaveProperty('slug', 'pho-bo-tai');
+      expect(result.item).toHaveProperty('name', 'Phở Bò Tái');
+      expect(result.item).toHaveProperty('price', 75000);
+      expect(result.item).toHaveProperty('descriptionFull');
+      expect(result.item).toHaveProperty('variants');
+      expect(result.item).toHaveProperty('addOns');
+      expect(result.item).toHaveProperty('images');
+
+      // Category info
+      expect(result.category).toHaveProperty('id', mockCategory.id);
+      expect(result.category).toHaveProperty('name', 'Phở');
     });
   });
 

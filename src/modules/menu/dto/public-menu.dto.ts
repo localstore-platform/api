@@ -61,10 +61,14 @@ export class MenuItemImageDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440003' })
   id: string;
 
-  @ApiProperty({ example: 'https://cdn.localstore.vn/images/pho-bo.jpg' })
+  @ApiProperty({
+    example: 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=800&q=80',
+  })
   url: string;
 
-  @ApiPropertyOptional({ example: 'https://cdn.localstore.vn/images/pho-bo-thumb.jpg' })
+  @ApiPropertyOptional({
+    example: 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=400&q=80',
+  })
   thumbnailUrl?: string;
 
   @ApiPropertyOptional({ example: 'Phở bò tái' })
@@ -105,7 +109,7 @@ export class PublicMenuItemDto {
   currencyCode: string;
 
   @ApiPropertyOptional({
-    example: 'https://cdn.localstore.vn/images/pho-bo-thumb.jpg',
+    example: 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=400&q=80',
     description: 'Main image URL',
   })
   imageUrl?: string | null;
@@ -175,7 +179,9 @@ export class PublicMenuStoreInfoDto {
   @ApiProperty({ example: 'pho-hanoi-24', description: 'URL-friendly slug' })
   slug: string;
 
-  @ApiPropertyOptional({ example: 'https://cdn.localstore.vn/logos/pho-hanoi-24.png' })
+  @ApiPropertyOptional({
+    example: 'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=200&h=200&fit=crop',
+  })
   logoUrl?: string | null;
 
   @ApiPropertyOptional({ example: '#E53935', description: 'Primary brand color (hex)' })
@@ -290,4 +296,108 @@ export class CategoryItemsResponseDto {
 
   @ApiProperty({ example: 5, description: 'Total number of items in this category' })
   totalItems: number;
+}
+
+/**
+ * DTO for image in item detail response
+ * Matches MenuItemDetailResponse.item.images from @localstore/contracts v0.3.1
+ */
+export class ItemDetailImageDto {
+  @ApiProperty({
+    example: 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=800&q=80',
+  })
+  url: string;
+
+  @ApiPropertyOptional({ example: 'Phở bò tái' })
+  alt?: string | null;
+
+  @ApiProperty({ example: true })
+  isPrimary: boolean;
+}
+
+/**
+ * DTO for variant in item detail response
+ * Matches MenuItemDetailResponse.item.variants from @localstore/contracts v0.3.1
+ */
+export class ItemDetailVariantDto {
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440001' })
+  id: string;
+
+  @ApiProperty({ example: 'Cỡ lớn' })
+  name: string;
+
+  @ApiProperty({ example: 5000, description: 'Price adjustment in VND' })
+  priceAdjustment: number;
+
+  @ApiProperty({ example: true })
+  available: boolean;
+}
+
+/**
+ * DTO for add-on in item detail response
+ * Matches MenuItemDetailResponse.item.addOns from @localstore/contracts v0.3.1
+ */
+export class ItemDetailAddOnDto {
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440002' })
+  id: string;
+
+  @ApiProperty({ example: 'Thêm trứng' })
+  name: string;
+
+  @ApiProperty({ example: 5000, description: 'Additional price in VND' })
+  price: number;
+
+  @ApiProperty({ example: false })
+  isRequired: boolean;
+
+  @ApiProperty({ example: true })
+  available: boolean;
+}
+
+/**
+ * DTO for detailed menu item in item detail response
+ * Extends MenuItemDto with descriptionFull, images, variants, addOns
+ * Matches MenuItemDetailResponse.item from @localstore/contracts v0.3.1
+ */
+export class MenuItemDetailDto extends PublicMenuItemDto {
+  @ApiPropertyOptional({
+    example: 'Phở bò tái được làm từ thịt bò tươi ngon nhất, nước dùng ninh xương 24 tiếng.',
+    description: 'Full detailed description',
+  })
+  descriptionFull?: string | null;
+
+  @ApiPropertyOptional({ type: [ItemDetailImageDto], description: 'All item images' })
+  images?: ItemDetailImageDto[];
+
+  @ApiPropertyOptional({ type: [ItemDetailVariantDto], description: 'Available variants (sizes)' })
+  variants?: ItemDetailVariantDto[];
+
+  @ApiPropertyOptional({ type: [ItemDetailAddOnDto], description: 'Available add-ons' })
+  addOns?: ItemDetailAddOnDto[];
+}
+
+/**
+ * DTO for category info in item detail response
+ * Simplified category info for context
+ */
+export class ItemDetailCategoryDto {
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440005' })
+  id: string;
+
+  @ApiProperty({ example: 'Phở' })
+  name: string;
+}
+
+/**
+ * DTO for menu item detail response
+ * GET /api/v1/menu/:tenantSlug/:categorySlug/:itemSlug
+ * Implements MenuItemDetailResponse from @localstore/contracts v0.3.1
+ * @see MenuItemDetailResponse in @localstore/contracts
+ */
+export class MenuItemDetailResponseDto {
+  @ApiProperty({ type: MenuItemDetailDto, description: 'Item details' })
+  item: MenuItemDetailDto;
+
+  @ApiPropertyOptional({ type: ItemDetailCategoryDto, description: 'Category info' })
+  category?: ItemDetailCategoryDto | null;
 }
