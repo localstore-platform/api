@@ -158,6 +158,8 @@ async function runSeed() {
         price: 75000,
         order: 2,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBQEVMHcS4nOY7jB9soqo8h5ZmGKKb0FtjHNsJJTYUyl9ec3hibx-kX6AnAnGbc0QsT6bStRQB8wiJFI3BsgXOQjT0TXE8C6Nkr9ld-R8Qg9P3EzuwFtA01w1NADiEfz5P4CdSmL9_oQUGJ6Nmbd99jgh8Uncm535JJGj0ALs6BB0WiLj_-TqYUM3e3uN7cluqCCX6yXxRAwB9xew61nU3u5syfhC0CUMjfBTh7KlaLeKP_sy5PItIQhNcfgsa6Y_sqXE-6dyDpJ_uG'
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440042',
@@ -184,6 +186,8 @@ async function runSeed() {
         price: 95000,
         order: 4,
         featured: true,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuDTKqmQTlill8yQYc8pFZYbTCABQ37x2_cWjRFXBIi42ElSEVmIGAre3UE6vy9_RzWOeqsSLyjNpxPwmTqxf7IaPqTv8Iqwg9vMjIFRm-vYydbz89CHtaL4ygwzDbiCTzdwS-10Q55CK9E_yxl9R8TjUXc4owB_Rf3aCC6hZeXfeJuSNOGKemxLTePxoac8lLCHvTZi35JtD4FOjO6FPw9SABk7IjaNoDNgmfO6gOIW3LxtvHLIJSS6_vBem6JMos4NJcHkVzL0OJIF'
       },
       // Bún category
       {
@@ -241,6 +245,8 @@ async function runSeed() {
         price: 70000,
         order: 2,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuDGZVbVkJGTu9m7oOJs2p-lJpfH8DSx3E5QgbshqezgfhokTdIWKyQGe2lrpvrjtuhY7cUbkpkIgbMUdu3E9KMtD5viUekao0VjbKXZO9o2SGADb5PwFaK4iQLlcPvKFk_2iejFxTi7iOZhYet6DssOHphaFCYQtn53obKf2a8Kgg4d4gxmRD4JoZVbWDMTXPylo_LRwj6m3_YLV6Sv2MKKSq2SIYDgbp9eQKXX_JmRknAi-mFvSO0IrxzhsWMQyWe1V0Hqad65wCjD'
       },
       // Đồ Uống category
       {
@@ -254,6 +260,8 @@ async function runSeed() {
         price: 25000,
         order: 1,
         featured: true,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuC43jRAgcd_rVQpLl-lRrTzdp4h8WQm-681kaGJ-afML7-SvvGZbvYtvPBoXTT0N2RLNbj-mUh5YBzoC_Nh5l5xsp8G0ZKOmIwiR9CBiodPAX0j8QaLAyMmpqWdj9gdg5n7VLSuX9hwn9QQtkk13L2305Hwb8jJ_5Ia4-qBvmZNX9nf5G-HIvIj3NK7Gql2YccuzEvhxbw4F8aVTC2PAmMgD9UlkRkW-R8i8Wm0Pzf5zdVgDEMfyIn2v9SiKVRJbhQQWV1HUN3Q69O3'
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440049',
@@ -266,6 +274,8 @@ async function runSeed() {
         price: 0,
         order: 2,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBBsHr0Yophaiw5tDy7GRY1jsTi5PDe5KEBBwJ-nFyYSu-TNZU1LrZXpXetPRQ17sPgzRqpW7Z21cmMX5AIRhQTZsF3Rb1ni5gdZ-ih6q5RfFoBOiK2dqMLKhVNd0rq5BiXoxMqD0yq3_xFWzBCaycJxTMt5nSQ093rnDoPPYb5ruN5iTBZiEZKz_PtdR3q78tEMSDpGyhmF9Mq1pcvqv7hply4vSl0_ZUEJ06O7KO58Bm-qEtUvfYEAv_-S0nxGFWJgE07vQYg-Lnl'
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440050',
@@ -278,6 +288,8 @@ async function runSeed() {
         price: 20000,
         order: 3,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuDLeOoHLWDF_kiK0wmPLSY53XC6zpYyI7OAVcZWDiU4rNDdi2P44rO4H6Fo1hYAITFp82sUJIjZ_kvWwtI7V0HLw_6WVmNfRWhuc0G-QZR9SIpddsCsCzkLc2YNot7Xi3unolVO0WLEIKeZ6Q6zKwHsB2cxZgeVQ0LK-p9YPs7gj5J9meYl3zCcoojuHejoR2wSQo9l91dPkryG6Yy8uf9PyZnPDUdSp8l6PybmstIj3-lzqXbofGFmCzok8Itg_ZOnwDXGw9sYXZlA'
       },
       // Tráng Miệng category
       {
@@ -291,6 +303,8 @@ async function runSeed() {
         price: 30000,
         order: 1,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCx5YevRICNXWQDHyy8UVcxFGZKsB8kE6brZD04eEkle3RBdF3-my8Bvr5tf-FzA8Ki8YnAVLMYJrFOt8Hya5K-mvsP7zFxvri7GtglIGfy994IjwsXp8dzdrI0TmYZ93VFpAgVnTy0PGu3l7V35EY5_JRK4Sr4X2OTu1vq7ZS1i9a7BogJErDlagKWoGLc_iwpz5LpjBhT9YPT_ytajp2iMVdx1vqry5VVTCmAo3zkyXfgjX8RMuRkrbEUBACnXOiaO3JYVgzyLLK6'
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440052',
@@ -303,6 +317,8 @@ async function runSeed() {
         price: 25000,
         order: 2,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuApof-xQfAI1HK80Q25WnFCOkm9EtbxjudQn44wDHLlyROiaZUbrxz-gcMOIsmt7CRwGNDwWggIzgzWcPGE5WG6j0K_KepcfC5GfZvgAT_I9ytM4k7z-qoqb7AT9bSJLVKADF1Gpli1YxedBz55uZ86bipE_ncS4NhWn56mePoZtfPFBet03Bm8HjcOjCCa1iyNGH1xpB_whyIo22V0iOfdQdnG-5wKw5wnShR67tFIa2G2cOPT2tAzQKLvZYJyywCGSoE_LBX32fId'
       },
     ];
 
