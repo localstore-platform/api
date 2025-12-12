@@ -350,6 +350,8 @@ export class MenuService {
       addOns: item.addOns?.map((a) => ({
         id: a.id,
         name: a.nameVi,
+        nameEn: a.nameEn || null,
+        imageUrl: a.thumbnailUrl || null,
         price: Number(a.price),
         isRequired: a.isRequired,
         available: a.isAvailable,

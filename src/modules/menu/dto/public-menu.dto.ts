@@ -335,7 +335,7 @@ export class ItemDetailVariantDto {
 
 /**
  * DTO for add-on in item detail response
- * Matches MenuItemDetailResponse.item.addOns from @localstore/contracts v0.3.1
+ * Matches MenuItemDetailResponse.item.addOns from @localstore/contracts v0.3.2
  */
 export class ItemDetailAddOnDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440002' })
@@ -343,6 +343,15 @@ export class ItemDetailAddOnDto {
 
   @ApiProperty({ example: 'Thêm trứng' })
   name: string;
+
+  @ApiPropertyOptional({ example: 'Extra Egg', description: 'English name for bilingual display' })
+  nameEn?: string | null;
+
+  @ApiPropertyOptional({
+    example: 'https://lh3.googleusercontent.com/aida-public/...',
+    description: 'Thumbnail image URL (48x48px)',
+  })
+  imageUrl?: string | null;
 
   @ApiProperty({ example: 5000, description: 'Additional price in VND' })
   price: number;
