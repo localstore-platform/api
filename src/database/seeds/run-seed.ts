@@ -27,6 +27,7 @@ async function runSeed() {
     }
 
     // Insert sample tenant
+    // Store logo from Google Stitch design integration (SEED_REQUEST from menu repo)
     await dataSource.query(
       `
       INSERT INTO tenants (id, business_name, slug, business_type, phone, address, city, province, status, logo_url, primary_color)
@@ -42,7 +43,7 @@ async function runSeed() {
         'Hồ Chí Minh',
         'Hồ Chí Minh',
         'active',
-        'https://images.unsplash.com/photo-1503764654157-72d979d9af2f?w=200&h=200&fit=crop',
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuCNKFNlOJ9dNTb79rAgR46TQ-bBt9DiSoFJgC5YOgMJyeQNmLgPUTUyEowAx2EX5C5nudiHab4L1q5KR9c8Zgtpe3rsXOXHgQ1KiqQ9jDJWlLwkTVdezSQ2upA5IsimJqwYNp9akvFLgiXR5kw7PAJkfyU1MWv9ko91DXw5nmXbtx-ObQQOvvrB4DkYm2m1BIrlIlQZfEJFNjV_-2GKK7Z4AJNMKlrv2LqsYUg_CgNhC9VQSs0UutNTm9ply9ER1_OJJCbozavyhA27',
         '#E53935',
       ],
     );
@@ -131,6 +132,7 @@ async function runSeed() {
     console.log('✅ Created 5 sample categories');
 
     // Insert sample menu items
+    // Image URLs from Google Stitch design integration (SEED_REQUEST from menu repo)
     const menuItems = [
       // Phở category
       {
@@ -144,9 +146,25 @@ async function runSeed() {
         price: 75000,
         order: 1,
         featured: true,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuC3QyHcnil92lyB7KRCC3SKyw5_PVQ8jEUcGKu96BYEDJABkNJT8VR-4aHHEMLZrpBY7uV_bMxNB306VcZNbooCpqzeTFVarlIrPOWLZC4cF3KsDHb-0MuJRfCzzMZ6Ll0nL4J6vQ1v4cHUFWtO_sLwT_cP8ZAfGdexaBBjH8qvrrVxSG-QDrpM7ZkMqePyrG-gjqGuG9rM1asmq-rYWW2nglEibJQHdWR6Z_Eiue8CPx216arjCKF2oH-nxU1yggB2KGfvSBArOd-X',
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440041',
+        categoryId: '550e8400-e29b-41d4-a716-446655440030',
+        nameVi: 'Phở Gà Ta',
+        nameEn: 'Free-range Chicken Pho',
+        slug: 'pho-ga-ta',
+        descVi: 'Phở gà ta thả vườn, thịt gà dai ngọt',
+        descEn: 'Free-range chicken pho with tender meat',
+        price: 65000,
+        order: 2,
+        featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCYQufSLSNGn_OrMPM2eGIyK_oLTuTYf6XyC-VhTECYeFfvsPO8f0J9v1UBOwRdlRMZSJpHOXgxz3nfr299DFGYbSDI6iMh3VvgpOSHL6uiSwSC0dtsWdAB6BlBVkwCiEa_Q2BEZ-vuFPDnvBG-Jm5es6AL22FEGs5274oN2dqDRjOS_1IG838nILET3IInIcs1xpL2Hss0jj5jtBIAEbBYRDly8d9ZLNkWOd9rxYnw3stRnBGIfraxaKqMFb5gEcfIlrDPA-OCfMXi',
+      },
+      {
+        id: '550e8400-e29b-41d4-a716-446655440042',
         categoryId: '550e8400-e29b-41d4-a716-446655440030',
         nameVi: 'Phở Bò Chín',
         nameEn: 'Well-done Beef Pho',
@@ -154,20 +172,9 @@ async function runSeed() {
         descVi: 'Phở bò chín thái lát, nước dùng đậm đà',
         descEn: 'Sliced well-done beef pho with rich broth',
         price: 75000,
-        order: 2,
-        featured: false,
-      },
-      {
-        id: '550e8400-e29b-41d4-a716-446655440042',
-        categoryId: '550e8400-e29b-41d4-a716-446655440030',
-        nameVi: 'Phở Gà',
-        nameEn: 'Chicken Pho',
-        slug: 'pho-ga',
-        descVi: 'Phở gà ta thả vườn, thịt gà dai ngọt',
-        descEn: 'Free-range chicken pho with tender meat',
-        price: 65000,
         order: 3,
         featured: false,
+        thumbnailUrl: null,
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440043',
@@ -180,13 +187,14 @@ async function runSeed() {
         price: 95000,
         order: 4,
         featured: true,
+        thumbnailUrl: null,
       },
       // Bún category
       {
         id: '550e8400-e29b-41d4-a716-446655440044',
         categoryId: '550e8400-e29b-41d4-a716-446655440031',
         nameVi: 'Bún Bò Huế',
-        nameEn: 'Hue Style Beef Noodles',
+        nameEn: 'Spicy Beef Noodle Soup',
         slug: 'bun-bo-hue',
         descVi: 'Bún bò Huế cay nồng, giò heo, chả cua',
         descEn: 'Spicy Hue style beef noodles with pork knuckle and crab cake',
@@ -194,31 +202,37 @@ async function runSeed() {
         order: 1,
         featured: true,
         spicy: true,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCRZsyBGCRCdvMV5W1e0u3XgKHhVWJEtopSVpNZSIw9V9Fpu2xKqZUHDFMjN-T-0sLM5RZcv_9uG3xDGTqlCyFRatG1a5qbLADtcTTSv4RG_FpzqxwTqbCRPkR5flHySDP27NZsOuVLJ4ZJCuozEzEdm7P2rICzk_LSP0VlTMCgcRG-Vd34cFCl4uaP4mH00O2XpcxfgxhnpXgTZLkajLQn-lKfthMlVMMFl97Fxe7JxnuZicK_lja7qbXyccKiw_oAB4oN32b2bSVv',
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440045',
         categoryId: '550e8400-e29b-41d4-a716-446655440031',
         nameVi: 'Bún Chả Hà Nội',
-        nameEn: 'Hanoi Grilled Pork Noodles',
+        nameEn: 'Grilled Pork Vermicelli',
         slug: 'bun-cha-ha-noi',
         descVi: 'Bún chả thịt nướng than hoa, nước mắm pha chua ngọt',
         descEn: 'Charcoal grilled pork with rice noodles and fish sauce',
         price: 70000,
         order: 2,
-        featured: false,
+        featured: true,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuD7XIw94A6zSQYV06abt83p0H_QaaUpyAKXc3wwl8qPMqyAsqI27qqqqSF4WhJuFPGa8fcddp3VPl89RkvVZN761TXz3YY556FXzZf1AKrsEGseiWHcTfsjrwiap7cFNuzJ5wC2WahGGaxskpLOoP4jcgS7TctKTEx-2bQJmMccW-4nGW9BodmSuShtCcQ5WCOZa9p7FshKE4YkYloKrBaBZBAEuuKQaH9PRkZScl8Vxl8go1DtTjAz2QwX4O9D-f-4vwrSKx9uVlFg',
       },
       // Cơm category
       {
         id: '550e8400-e29b-41d4-a716-446655440046',
         categoryId: '550e8400-e29b-41d4-a716-446655440032',
-        nameVi: 'Cơm Tấm Sườn Bì Chả',
-        nameEn: 'Broken Rice with Pork',
-        slug: 'com-tam-suon-bi-cha',
-        descVi: 'Cơm tấm sườn nướng, bì, chả trứng',
-        descEn: 'Broken rice with grilled pork, shredded pork skin, and egg cake',
+        nameVi: 'Cơm Rang Dưa Bò',
+        nameEn: 'Fried Rice with Beef',
+        slug: 'com-rang-dua-bo',
+        descVi: 'Cơm rang dưa cải chua với thịt bò xào',
+        descEn: 'Fried rice with beef and pickled mustard greens',
         price: 65000,
         order: 1,
         featured: false,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuABkKfkMuELcWY6Jsji07AY5yVKb9n7WR_jJJv9npSb7zpDXGfGLjkqpOslFB3B7MH1hFOb3819pGYLTCEH1UDnmkq6rEy-7gGGkVFqc1Ggt6nNWl_33Jnp_bhStU0PSQaNlkp1kPbaZyq5sOUEDZEiU03Sc3M00V2n517_OigIPKx3cKx4jldeIqv3dJVkPH1ISLn6pnF7QRihPr5-CIboH3Iiy0cJCSNZOG4i2SqLLnL_QeeTRPl7IHtTZWlhQcCzk0PmW8VU4L3t',
       },
       {
         id: '550e8400-e29b-41d4-a716-446655440047',
@@ -231,6 +245,7 @@ async function runSeed() {
         price: 70000,
         order: 2,
         featured: false,
+        thumbnailUrl: null,
       },
       // Đồ Uống category
       {
@@ -302,9 +317,9 @@ async function runSeed() {
         INSERT INTO menu_items (
           id, tenant_id, category_id, name_vi, name_en, slug,
           description_vi, description_en, base_price, 
-          display_order, is_featured, is_spicy, status, published_at
+          display_order, is_featured, is_spicy, status, thumbnail_url, published_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'published', NOW())
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'published', $13, NOW())
       `,
         [
           item.id,
@@ -319,6 +334,7 @@ async function runSeed() {
           item.order,
           item.featured || false,
           item.spicy || false,
+          item.thumbnailUrl || null,
         ],
       );
     }
@@ -386,34 +402,42 @@ async function runSeed() {
     console.log(`✅ Created ${variants.length} sample variants`);
 
     // Insert sample add-ons
+    // Add-on images from Google Stitch design integration (SEED_REQUEST from menu repo)
     const addOns = [
       {
-        itemId: '550e8400-e29b-41d4-a716-446655440040',
-        nameVi: 'Thêm thịt',
-        nameEn: 'Extra meat',
-        price: 20000,
-        order: 1,
-      },
-      {
-        itemId: '550e8400-e29b-41d4-a716-446655440040',
-        nameVi: 'Thêm hành',
-        nameEn: 'Extra onion',
+        itemId: '550e8400-e29b-41d4-a716-446655440040', // Phở Bò Tái
+        nameVi: 'Quẩy Giòn',
+        nameEn: 'Fried Dough Stick',
         price: 5000,
+        order: 1,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBdUF1JietdtL8qeIGT0vlIh5XUNuBsOGQzIFU3JDZGpjcuLANsV8XFyaqzM0zBq7Yo3t4G-0YWi_c55-k7ILjPgkW7MBhKk5zBVTjnDnSlY4gyOe-PSJhxA5ZXlhTJpulK2v5WLEzD0qXtcb4YlS1QvIIGoh5skfRA28-YYYBErYdoq7K9G565njIQvJIwRpS70EK9L9A222Z5ehkK-eNrQDaBvAixTfEJ6k06Sj4cmOu9EwswKDE1OLWiZ6-wvbUX7TFkVvJiwdvv',
+      },
+      {
+        itemId: '550e8400-e29b-41d4-a716-446655440040', // Phở Bò Tái
+        nameVi: 'Trứng Trần',
+        nameEn: 'Poached Egg',
+        price: 8000,
         order: 2,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuCives_kuc9ZR8HkCowwngI3JK-8IJkNX1wXzvhNDZCdAxoeQESKn8LkhTv3-7tIGFnqzL_W8ga3AyRtVc7FEWVh5u0Gj8Qnlk_Jnle4-WKGSIlUfYMzFyiLfiz2H_jGeUMlKsvenLjhIPu_Y48hpFDZr52DyaqNFrE4MKOgms29fQ9kBp6ZmuVgONYsAXY0D4HSM3ye-f2jiwTGpvm9UiLxwOtbwQCuY9XebIGK3RSadMHeT8YHlM0VFUQ9tRapXBuEQlo7csVsbwS',
       },
       {
-        itemId: '550e8400-e29b-41d4-a716-446655440040',
-        nameVi: 'Trứng gà',
-        nameEn: 'Egg',
-        price: 10000,
+        itemId: '550e8400-e29b-41d4-a716-446655440040', // Phở Bò Tái
+        nameVi: 'Thêm Bò Tái',
+        nameEn: 'Extra Rare Beef',
+        price: 25000,
         order: 3,
+        thumbnailUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuBbbwbz1Nae7aCqpMjYWulaYtoYx7GWKH2fYzYlthirxvarD5Y3rFJm6hdYDeuPP4CVfPTX78o-fOzTDOwFziPndNERWWIDzsv0R4uvZV7tBCAT6xLOnYpRFrOtbyi02KpEnDdMSQFLNHMs6mypVRggFe5rLnO1mlmt6LGVUO4GScf3oj6tyCokX_hGv6fkq7XLhkhwkyhc58PfO5whU3Di17AoTnVpRgM4CfS3sPv2UzmrQupHmirJEc39kcbJ6n4TVUtVbJMK2CQ5',
       },
       {
-        itemId: '550e8400-e29b-41d4-a716-446655440048',
+        itemId: '550e8400-e29b-41d4-a716-446655440048', // Cà Phê Sữa Đá
         nameVi: 'Thêm sữa',
         nameEn: 'Extra milk',
         price: 5000,
         order: 1,
+        thumbnailUrl: null,
       },
     ];
 
@@ -422,14 +446,59 @@ async function runSeed() {
         `
         INSERT INTO item_add_ons (
           tenant_id, menu_item_id, name_vi, name_en, 
-          price, display_order, is_available
+          price, display_order, thumbnail_url, is_available
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       `,
-        [tenantId, addOn.itemId, addOn.nameVi, addOn.nameEn, addOn.price, addOn.order, true],
+        [
+          tenantId,
+          addOn.itemId,
+          addOn.nameVi,
+          addOn.nameEn,
+          addOn.price,
+          addOn.order,
+          addOn.thumbnailUrl || null,
+          true,
+        ],
       );
     }
     console.log(`✅ Created ${addOns.length} sample add-ons`);
+
+    // Insert sample item images (hero images for item detail page)
+    // Hero image from Google Stitch design integration (SEED_REQUEST from menu repo)
+    const itemImages = [
+      {
+        itemId: '550e8400-e29b-41d4-a716-446655440040', // Phở Bò Tái
+        originalUrl:
+          'https://lh3.googleusercontent.com/aida-public/AB6AXuAyY1nPPx4ByY0t_AMoBBzPkCiTpL4F31Zc5QTAYqMr_LRtSuvL8pfDwD-zVJkkwmX0hEE9QFKaG7soH4UotnHP-OpilmNtZOdTjfZ18ig5WcLx6UYXGIlrEcyg1D8oaSUmm4l3Dqj1FE9-Jr7jzmQCzXFpaYCUvUOk91pEKRkivTqcPqtIAoXyvFgWerZ9ABACc3ANX9-OyhKxVNQd5FTOO74o0GXygS0VDV_RgfxKK4uhkMiykyVZejI7-hFbsdIrn8any2OXS0MM',
+        altTextVi: 'Phở Bò Tái - Tô phở đầy đặn với thịt bò tái tươi',
+        altTextEn: 'Rare Beef Pho - Full bowl with fresh rare beef slices',
+        order: 1,
+        isPrimary: true,
+      },
+    ];
+
+    for (const image of itemImages) {
+      await dataSource.query(
+        `
+        INSERT INTO item_images (
+          tenant_id, menu_item_id, original_url, 
+          alt_text_vi, alt_text_en, display_order, is_primary
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `,
+        [
+          tenantId,
+          image.itemId,
+          image.originalUrl,
+          image.altTextVi,
+          image.altTextEn,
+          image.order,
+          image.isPrimary,
+        ],
+      );
+    }
+    console.log(`✅ Created ${itemImages.length} sample item images`);
 
     console.log('\n🎉 Seed completed successfully!');
     console.log(`   Tenant ID: ${tenantId}`);
