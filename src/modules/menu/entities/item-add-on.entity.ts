@@ -51,6 +51,9 @@ export class ItemAddOn {
   @Column({ name: 'display_order', default: 0 })
   displayOrder: number;
 
+  @Column({ name: 'thumbnail_url', type: 'text', nullable: true })
+  thumbnailUrl: string;
+
   @Column({ name: 'is_available', default: true })
   isAvailable: boolean;
 
